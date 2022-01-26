@@ -1,0 +1,12 @@
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.AssemblyInfoInputs.cache
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.AssemblyInfo.cs
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.csproj.CoreCompileInputs.cache
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\bin\Debug\net6.0\Jago.domain.deps.json
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\bin\Debug\net6.0\Jago.domain.dll
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\bin\Debug\net6.0\ref\Jago.domain.dll
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\bin\Debug\net6.0\Jago.domain.pdb
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.dll
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\ref\Jago.domain.dll
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.pdb
+C:\Users\Jefferson\Documents\Jago.System\Jago.domain\obj\Debug\net6.0\Jago.domain.csproj.AssemblyReference.cache

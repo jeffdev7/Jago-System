@@ -1,0 +1,81 @@
+﻿@using Jago.Application.ViewModel
+@model IEnumerable<PassengerViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["success"]!= null)
+{
+     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["success"]');
+    </script>
+}
+
+<br />
+<h3>Passengers</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>Add</a>
+</p>
+<table class="table">
+    <thead>
+        <script src="https://kit.fontawesome.com/ca515fdac4.js" crossorigin="anonymous"></script>
+        <tr>
+            <th>
+                 Name
+            </th>
+            <th>
+                RG
+            </th>
+            <th>
+                CPF
+            </th>
+            <th>
+               Celular
+            </th>
+            <th>
+                Email
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RG)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CPF)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Celular)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.Id"><i class="far fa-edit"></i></a> |
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id"><i class="fas fa-user-times"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@*@{
+    var prev = !Model.PreviousPage ? "disabled " : "";
+    var next = !Model.NextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex -1)"
+class="btn btn-outline-primary @prev"> Anterior</a>
+
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+class="btn btn-outline-primary @next"> Próximo</a>*@

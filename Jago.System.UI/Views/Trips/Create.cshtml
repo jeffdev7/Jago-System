@@ -1,0 +1,61 @@
+﻿@using Jago.Application.ViewModel
+@using Jago.domain.Core.Entities
+
+@model Trip
+@{
+    ViewData["Title"] = "Trip";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h4>Trips</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Origem" class="control-label"></label>
+                <input asp-for="Origem" class="form-control" />
+                <span asp-validation-for="Origem" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Destino" class="control-label"></label>
+                <input asp-for="Destino" class="form-control" />
+                <span asp-validation-for="Destino" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Departure" class="control-label"></label>
+                <input asp-for="Departure" class="form-control" />
+                <span asp-validation-for="Departure" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Arrival" class="control-label"></label>
+                <input asp-for="Arrival" class="form-control" />
+                <span asp-validation-for="Arrival" class="text-danger"></span>
+            </div>
+                <div class="form-group">
+                <label asp-for="PassengerId" class="control-label">Passenger</label>
+                    <select asp-for="PassengerId" class ="form-control">
+                        <option value="0">Selecione</option>
+                        @foreach (var item in ViewBag.Passengers)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+
+                    </select>   
+                </div>
+                <span asp-validation-for=PassengerId class="text-danger"></span>
+            <div class="form-group">
+                <div>
+                    <br />
+                <input type="submit" value="Create" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-light">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
