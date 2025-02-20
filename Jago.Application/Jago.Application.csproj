@@ -14,5 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Jago.domain\Jago.domain.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\Jago.CrossCutting\Jago.CrossCutting.csproj" />
+	</ItemGroup>
 </Project>

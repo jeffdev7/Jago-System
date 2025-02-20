@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<TripViewModel>
-@using Jago.Application.ViewModel
+@using Jago.CrossCutting.Dto
 
 @{
     ViewData["Title"] = "Index";
@@ -45,10 +45,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @item.Origem
+                @item.Origin
             </td>
             <td>
-                @item.Destino
+                @item.Destine
             </td>
             <td>
                 @item.Departure
