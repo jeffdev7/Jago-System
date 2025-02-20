@@ -5,5 +5,6 @@ namespace Jago.domain.Interfaces.Repositories
     public interface IPassengerRepository : IRepository<Passenger>
     {
         IQueryable<Passenger> GetPax();
+        Task<bool> RemovePassengerAsync(Guid Id);
     }
 }

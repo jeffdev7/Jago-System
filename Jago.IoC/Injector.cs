@@ -9,10 +9,10 @@ namespace Jago.IoC
 {
     public class Injector
     {
-      //  public IConfiguration Config { get; }
+        //  public IConfiguration Config { get; }
         public static void Services(IServiceCollection services)
         {
-            
+
             //Repo
             services.AddScoped<IPassengerRepository, PassengerRepository>();
             services.AddScoped<ITripRepository, TripRepository>();

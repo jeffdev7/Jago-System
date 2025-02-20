@@ -22,6 +22,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Application", "3-Application", "{997F77AF-1D7B-4BE1-9821-A3C973FBDF1C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jago.Application", "Jago.Application\Jago.Application.csproj", "{39EB6AE5-643A-4A80-AD26-CAF4B5193C02}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0FBDF6AC-EC9C-47A3-9723-7CBBF8E22C33} = {0FBDF6AC-EC9C-47A3-9723-7CBBF8E22C33}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5-Presentation", "5-Presentation", "{A9E70627-1077-4B34-8485-12CC3D451A9D}"
 EndProject

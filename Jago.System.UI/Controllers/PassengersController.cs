@@ -1,10 +1,10 @@
 ﻿#nullable disable
+using Jago.Application.Services;
+using Jago.CrossCutting.Dto;
+using Jago.domain.Core.Entities;
+using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Jago.Infrastructure.DBConfiguration;
-using Jago.domain.Core.Entities;
-using Jago.Application.Services;
-using Jago.Application.ViewModel;
 
 namespace Jago.System.UI.Controllers
 {
@@ -75,10 +75,10 @@ namespace Jago.System.UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit (Guid id)
+        public IActionResult Edit(Guid id)
         {
-            var item = Db.Passengers.FirstOrDefault(j=>j.Id == id);
-            if(item == null) return BadRequest();
+            var item = Db.Passengers.FirstOrDefault(j => j.Id == id);
+            if (item == null) return BadRequest();
             LoadViewBags();
             return View(item);
         }
@@ -89,7 +89,7 @@ namespace Jago.System.UI.Controllers
         {
             LoadViewBags();
             if (!ModelState.IsValid)
-                return View(pax);           
+                return View(pax);
 
             var item = Db.Passengers.AsNoTracking().Where(_ => _.Id == pax.Id);
             if (item == null) return BadRequest();
@@ -117,7 +117,7 @@ namespace Jago.System.UI.Controllers
             return View(passenger);
         }
 
-       // POST: Passengers/Delete
+        // POST: Passengers/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

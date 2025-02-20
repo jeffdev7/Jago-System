@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 namespace Jago.Infrastructure.DBConfiguration
 {
     public interface IAppDbContext { }
-   // IdentityDbContext<ApplicationUser>, IAppDbContext
+    // IdentityDbContext<ApplicationUser>, IAppDbContext
     public class ApplicationContext : DbContext
     {
         public DbSet<Passenger> Passengers { get; set; }

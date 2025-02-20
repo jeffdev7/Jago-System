@@ -1,15 +1,10 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Jago.Infrastructure.DBConfiguration;
-using Jago.domain.Core.Entities;
 using Jago.Application.Services;
-using Jago.Application.ViewModel;
+using Jago.CrossCutting.Dto;
+using Jago.domain.Core.Entities;
+using Jago.Infrastructure.DBConfiguration;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jago.System.UI.Controllers
 {
@@ -76,8 +71,8 @@ namespace Jago.System.UI.Controllers
             LoadViewBags();
             if (ModelState.IsValid)
             {
-               return View(trip);
-               
+                return View(trip);
+
             }
             Db.Trips.Add(trip);
             Db.SaveChanges();
@@ -92,7 +87,7 @@ namespace Jago.System.UI.Controllers
         {
             LoadViewBags();
             var item = Db.Trips.FirstOrDefault(j => j.Id == id);
-            if(item == null) return BadRequest();
+            if (item == null) return BadRequest();
             return View(item);
 
         }
@@ -135,7 +130,7 @@ namespace Jago.System.UI.Controllers
         }
 
         // POST: Trips/Delete
-        [HttpPost, ActionName("Delete")] 
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
@@ -156,7 +151,7 @@ namespace Jago.System.UI.Controllers
         {
             LoadAsync();
         }
-        public async void LoadAsync() 
+        public async void LoadAsync()
         {
             ViewBag.Passengers = _tripServices.GetPaxList().ToList();
         }

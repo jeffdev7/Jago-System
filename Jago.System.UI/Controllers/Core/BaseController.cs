@@ -1,5 +1,4 @@
-﻿using FluentValidation.Results;
-using Jago.Infrastructure.DBConfiguration;
+﻿using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers

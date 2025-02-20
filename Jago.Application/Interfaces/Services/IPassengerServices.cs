@@ -1,5 +1,5 @@
 ﻿using FluentValidation.Results;
-using Jago.Application.ViewModel;
+using Jago.CrossCutting.Dto;
 using Jago.domain.Core.Entities;
 
 
@@ -12,8 +12,8 @@ namespace Jago.Application.Services
         IEnumerable<PassengerViewModel> GetAllBy(Func<Passenger, bool> exp);
         ValidationResult Add(PassengerViewModel vm);
         ValidationResult Update(PassengerViewModel vm);
-        ValidationResult Remove(Guid id);
+        Task<bool> Remove(Guid id);
         IEnumerable<PassengerViewModel> GetPax();
-       
+
     }
 }

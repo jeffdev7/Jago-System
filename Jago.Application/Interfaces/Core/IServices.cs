@@ -2,8 +2,8 @@
 
 namespace Jago.Application.Interfaces.Core
 {
-    public interface IServices<TEntity, TViewModel> : IDisposable where TEntity : 
-        class where TViewModel:class, new() 
+    public interface IServices<TEntity, TViewModel> : IDisposable where TEntity :
+        class where TViewModel : class, new()
     {
         Task<IEnumerable<TViewModel>> GetAll();
         Task<TViewModel> GetById(Guid id);
@@ -12,5 +12,5 @@ namespace Jago.Application.Interfaces.Core
         Task<ValidationResult> Update(TViewModel vm);
         Task<ValidationResult> Remove(TViewModel vm);
     }
-    
+
 }

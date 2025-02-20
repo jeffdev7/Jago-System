@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
-using Jago.Application.ViewModel;
+using Jago.CrossCutting.Dto;
+using Jago.CrossCutting.Validation;
 using Jago.domain.Core.Entities;
 using Jago.domain.Interfaces.Repositories;
-using Jago.domain.Validator;
 
 namespace Jago.Application.Services
 {
@@ -32,37 +32,32 @@ namespace Jago.Application.Services
         public ValidationResult Add(PassengerViewModel vm)
         {
             var entity = _mapper.Map<Passenger>(vm);
-            var validationResult = new PassengerValidator().Validate(entity);
-            if(validationResult.IsValid)
-            _paxRepository.Add(entity);
+            var validationResult = new AddPassengerValidator().Validate(vm);
+            if (validationResult.IsValid)
+                _paxRepository.Add(entity);
 
             return validationResult;
-           
+
         }
 
         public void Dispose()
         {
-           GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         public IEnumerable<PassengerViewModel> GetPax()
         {
             return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetPax());
         }
 
-        public ValidationResult Remove(Guid id)
+        public async Task<bool> Remove(Guid id)
         {
-            var entity = _paxRepository.GetById(id);
-            var validationResult = new PassengerValidator().Validate(entity);
-            if(validationResult.IsValid)
-            _paxRepository.Remove(id);
-            //_paxRepository.Dispose();   
-            return validationResult;
+            return await _paxRepository.RemovePassengerAsync(id);
         }
 
         public ValidationResult Update(PassengerViewModel vm)
         {
             var entity = _mapper.Map<Passenger>(vm);
-            var validationResult = new PassengerValidator().Validate(entity);
+            var validationResult = new UpdatePassengerValidator().Validate(vm);
 
             if (validationResult.IsValid)
             {
