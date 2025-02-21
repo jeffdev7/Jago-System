@@ -5,38 +5,23 @@ using Microsoft.Extensions.Configuration;
 namespace Jago.Infrastructure.DBConfiguration
 {
     public interface IAppDbContext { }
-    // IdentityDbContext<ApplicationUser>, IAppDbContext
-    public class ApplicationContext : DbContext
+
+    public class ApplicationContext : IdentityDbContext<ApplicationUser>, IAppDbContext
     {
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         public ApplicationContext()
         {
-
         }
-
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Passenger>().HasKey(_ => _.Id);
+            modelBuilder.Entity<Trip>().HasKey(_ => _.Id);
+            modelBuilder.Entity<Trip>().HasOne(_ => _.Passenger);
+
             base.OnModelCreating(modelBuilder);
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                IConfigurationRoot config = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-                var conn = config.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseSqlServer(conn);
-            }
-        }
-
     }
 }
-
-/*(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionDBJago")))*/

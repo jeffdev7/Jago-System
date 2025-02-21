@@ -1,26 +1,28 @@
-using AutoMapper;
 using Jago.Application.AutoMapper;
-using Jago.Application.Services;
-using Jago.domain.Interfaces.Repositories;
 using Jago.Infrastructure.DBConfiguration;
-using Jago.Infrastructure.Repositories;
 using Jago.IoC;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IPassengerServices, PassengerServices>();
-builder.Services.AddScoped<ITripServices, TripServices>();
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationContext>(options =>
+options.UseSqlServer(connection));
 
-builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
-builder.Services.AddScoped<ITripRepository, TripRepository>();
+// Add services to the container.
 
 builder.Services.AddAutoMapper(typeof(DomainVMMapping), typeof(VMDomainMapping));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddDbContext<ApplicationContext>();
 
-
+Bootstrapper.RegisterServices(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,7 +38,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+builder.Services.AddScoped<ApplicationContext>();
 
 app.MapControllerRoute(
     name: "default",
