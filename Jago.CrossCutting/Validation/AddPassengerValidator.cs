@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using Jago.CrossCutting.Dto;
+using System.Text.RegularExpressions;
 
 namespace Jago.CrossCutting.Validation
 {
-    public class AddPassengerValidator : AbstractValidator<PassengerViewModel>
+    public class PassengerValidator : AbstractValidator<PassengerViewModel>
     {
-        public AddPassengerValidator()
+        public PassengerValidator()
         {
             RuleFor(j => j.Name).NotEmpty();
             RuleFor(j => j.Name).NotNull();
@@ -16,16 +17,20 @@ namespace Jago.CrossCutting.Validation
             RuleFor(j => j.Email).NotNull();
             RuleFor(j => j.Email).NotEmpty().EmailAddress();
 
-            RuleFor(j => j.RG).NotNull();
-            RuleFor(j => j.RG).NotEmpty()
-                .Matches(@"(^\d{1,2}).?(\d{3}).?(\d{3})-?(\d{1}|X|x$)")
-                .WithMessage("RG inválido.");
-
-            RuleFor(j => j.CPF).NotNull();
-            RuleFor(j => j.CPF).NotEmpty()
-                .Matches(@"(^\d{3}\.\d{3}\.\d{3}\-\d{2}$)")
-                .WithMessage("CPF inválido.");
+            RuleFor(j => j.DocumentNumber).NotNull();
+            RuleFor(j => j.DocumentNumber).NotEmpty().Must(ValidDocument)
+                .WithMessage("Invalid Document");
         }
+        private static bool ValidDocument(string document)
+        {
+            var patternRg = @"(^\d{1,2}).?(\d{3}).?(\d{3})-?(\d{1}|X|x$)";
+            var patternCpf = @"(^\d{3}\.\d{3}\.\d{3}\-\d{2}$)";
 
+            if (Regex.IsMatch(document, patternRg) || Regex.IsMatch(document, patternCpf))
+                return true;
+
+            return false;
+        }
     }
+
 }
