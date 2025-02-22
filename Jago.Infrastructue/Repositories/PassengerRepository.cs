@@ -15,6 +15,13 @@ namespace Jago.Infrastructure.Repositories
             return _context.Passengers;
         }
 
+        public IQueryable<Passenger> IsDocumentNumberUniqueAcrossPassengers(string document, Guid passengerId)
+        {
+            var t = _context.Passengers.Where(p => p.DocumentNumber == document && p.Id == passengerId);
+            var y = _context.Passengers.Any(p => p.DocumentNumber == document && p.Id == passengerId);
+            return t;
+        }
+
         public async Task<bool> RemovePassengerAsync(Guid Id)
         {
             Passenger? passenger = await _context.Passengers.Where(x => x.Id == Id).FirstOrDefaultAsync();
