@@ -1,7 +1,6 @@
 ﻿using Jago.domain.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Jago.Infrastructure.DBConfiguration
 {

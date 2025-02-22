@@ -2,7 +2,7 @@
 
 namespace Jago.CrossCutting.Dto
 {
-    public class TripViewModel 
+    public class TripViewModel
     {
         [Key]
 
@@ -12,6 +12,6 @@ namespace Jago.CrossCutting.Dto
         public DateTime Departure { get; set; }
         public DateTime Arrival { get; set; }
         public Guid PassengerId { get; set; }
-        public string PaxName { get;  set; }
-    } 
+        public string PaxName { get; set; }
+    }
 }

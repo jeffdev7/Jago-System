@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +64,7 @@ namespace Jago.System.UI.Controllers
         {
             var result = _tripServices.Add(trip);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
                 TempData["success"] = "Trip WAS NOT ADDED";
             else
                 TempData["success"] = "Trip added successfully";
@@ -95,7 +94,7 @@ namespace Jago.System.UI.Controllers
         {
             var result = _tripServices.Update(trip);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
                 TempData["success"] = "Trip WAS NOT UPDATED";
             else
                 TempData["success"] = "Trip updated successfully";
@@ -107,7 +106,7 @@ namespace Jago.System.UI.Controllers
         [HttpGet]
         public IActionResult Delete(Guid id)
         {
-            var trip =  _tripServices.GetById(id);
+            var trip = _tripServices.GetById(id);
 
             if (trip == null)
             {

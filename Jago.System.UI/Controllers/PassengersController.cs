@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +64,7 @@ namespace Jago.System.UI.Controllers
             }
             var result = _paxServices.Add(vm);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
                 TempData["success"] = "ERROR PASSENGER WAS NOT ADDED";
 
             else
@@ -80,7 +79,7 @@ namespace Jago.System.UI.Controllers
         public IActionResult Edit(Guid id)
         {
             var item = _paxServices.GetById(id);
-            if (item == null) 
+            if (item == null)
                 return BadRequest();
             LoadViewBags();
 
@@ -93,7 +92,7 @@ namespace Jago.System.UI.Controllers
         {
             var result = _paxServices.Update(pax);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
                 TempData["success"] = "Passenger WAS NOT UPDATED";
             else
             {
