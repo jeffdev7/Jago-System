@@ -15,7 +15,7 @@ namespace Jago.CrossCutting.Validation
 
             RuleFor(j => j.Name).NotNull();
             RuleFor(j => j.Name).NotEmpty()
-                .Matches("^[A-Za-z]+$")
+                .Matches("^[A-Za-z ]+$")
                 .WithMessage("Only alphabetical letters");
 
             RuleFor(j => j.Phone).NotNull();
