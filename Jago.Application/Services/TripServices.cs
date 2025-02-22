@@ -4,6 +4,7 @@ using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Validation;
 using Jago.domain.Core.Entities;
 using Jago.domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jago.Application.Services
 {
@@ -22,27 +23,27 @@ namespace Jago.Application.Services
             return _mapper.Map<IEnumerable<TripViewModel>>(_tripRepository.GetAll());
         }
         //ORDER BY DESTINY
-        //public IEnumerable<TripViewModel> GetOrder()
-        //{
-        //    var travel = _tripRepository.GetAll().OrderBy(j => j.Destine)
-        //          .Include(j => j.Passenger)
-        //          .Select(j => new TripViewModel
-        //          {
-        //              Id = j.Id,
-        //              Origem = j.Origem,
-        //              Destino = j.Destino,
-        //              Departure = j.Departure,
-        //              Arrival = j.Arrival,
-        //              PassageiroId = j.PassengerId,
-        //              PaxName = j.Passenger.Name
-
-        //          }).AsNoTracking();
-        //    Dispose();
-        //    return travel;
-        //}
-        public TripViewModel GetById(Guid id)
+        public IEnumerable<TripViewModel> GetSortedTrips()
         {
-            return _mapper.Map<TripViewModel>(_tripRepository.GetById(id));
+            var travel = _tripRepository.GetAll().OrderBy(j => j.Destine)
+                  .Include(j => j.Passenger)
+                  .Select(j => new TripViewModel
+                  {
+                      Id = j.Id,
+                      Origin = j.Origin,
+                      Destine = j.Destine,
+                      Departure = j.Departure,
+                      Arrival = j.Arrival,
+                      PassengerId = j.PassengerId,
+                      PaxName = j.Passenger.Name
+
+                  }).AsNoTracking();
+            Dispose();
+            return travel;
+        }
+        public Trip GetById(Guid id)
+        {
+            return _mapper.Map<Trip>(_tripRepository.GetById(id));
         }
         public IEnumerable<TripViewModel> GetAllBy(Func<Trip, bool> exp)
         {

@@ -29,12 +29,7 @@ namespace Jago.System.UI.Controllers
 
         public override IEnumerable<TripViewModel> GetRows()
         {
-            return _tripServices.GetAll();
-        }
-        public override TripViewModel GetRow(Guid id)
-        {
-            return _tripServices.GetById(id);
-
+            return _tripServices.GetSortedTrips();
         }
 
         // GET: Trips/Details
@@ -83,10 +78,14 @@ namespace Jago.System.UI.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
+            var result = _tripServices.GetById(id);
+
+            if (result is null)
+                return BadRequest();
+
             LoadViewBags();
-            var item = Db.Trips.FirstOrDefault(j => j.Id == id);//TODO
-            if (item == null) return BadRequest();
-            return View(item);
+
+            return View(result);
 
         }
 
@@ -106,17 +105,10 @@ namespace Jago.System.UI.Controllers
 
         // GET: Trips/Delete
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
+            var trip =  _tripServices.GetById(id);
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var trip = await Db.Trips
-                .Include(t => t.Passenger)
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (trip == null)
             {
                 return NotFound();
@@ -149,6 +141,11 @@ namespace Jago.System.UI.Controllers
         public async void LoadAsync()
         {
             ViewBag.Passengers = _tripServices.GetPaxList().ToList();
+        }
+
+        public override TripViewModel GetRow(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

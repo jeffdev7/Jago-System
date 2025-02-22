@@ -12,6 +12,6 @@ namespace Jago.CrossCutting.Dto
         public DateTime Departure { get; set; }
         public DateTime Arrival { get; set; }
         public Guid PassengerId { get; set; }
-        public string PaxName { get; internal set; }
+        public string PaxName { get;  set; }
     } 
 }

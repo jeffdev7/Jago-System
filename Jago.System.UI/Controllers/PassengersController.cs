@@ -23,11 +23,6 @@ namespace Jago.System.UI.Controllers
         {
             return _paxServices.GetAll();
         }
-        public override PassengerViewModel GetRow(Guid id)
-        {
-            return _paxServices.GetById(id);
-
-        }
 
         // GET: Passengers
         public IActionResult Index()
@@ -84,10 +79,11 @@ namespace Jago.System.UI.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            var item = Db.Passengers.FirstOrDefault(j => j.Id == id);//TODO 
+            var item = _paxServices.GetById(id);
             if (item == null) 
                 return BadRequest();
             LoadViewBags();
+
             return View(item);
         }
 
@@ -108,15 +104,9 @@ namespace Jago.System.UI.Controllers
         }
 
         // GET: Passengers/Delete
-        public async Task<IActionResult> Delete(Guid id)//TODO
+        public IActionResult Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var passenger = await Db.Passengers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var passenger = _paxServices.GetById(id);
             if (passenger == null)
             {
                 return NotFound();
@@ -130,7 +120,7 @@ namespace Jago.System.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var result = _paxServices.Remove(id);
+            var result = await _paxServices.Remove(id);
             TempData["success"] = "Passenger deleted successfully";
             return RedirectToAction(nameof(Index));
         }
@@ -144,5 +134,10 @@ namespace Jago.System.UI.Controllers
             LoadAsync();
         }
         public async void LoadAsync() { }
+
+        public override PassengerViewModel GetRow(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
