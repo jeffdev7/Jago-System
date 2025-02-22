@@ -3,8 +3,6 @@ using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Jago.System.UI.Controllers
 {
@@ -36,7 +34,7 @@ namespace Jago.System.UI.Controllers
             var passenger = _paxServices.GetById(id);
 
             if (passenger == null)
-                return NotFound();           
+                return NotFound();
 
             return View(passenger);
         }
@@ -54,12 +52,12 @@ namespace Jago.System.UI.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
-            
+
             var result = _paxServices.Add(vm);
 
             if (!result.IsValid)
             {
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.ErrorMessage);
                 }
@@ -95,7 +93,7 @@ namespace Jago.System.UI.Controllers
 
             if (!result.IsValid)
             {
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.ErrorMessage);
                 }

@@ -3,7 +3,6 @@ using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Jago.System.UI.Controllers
 {

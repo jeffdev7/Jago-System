@@ -2,7 +2,6 @@
 using Jago.CrossCutting.Dto;
 using Jago.domain.Interfaces.Repositories;
 using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 
 namespace Jago.CrossCutting.Validation
 {
@@ -13,17 +12,21 @@ namespace Jago.CrossCutting.Validation
         public AddPassengerValidator(IPassengerRepository passengerRepository)
         {
             _passengerRepository = passengerRepository;
-            RuleFor(j => j.Name).NotEmpty();
-            RuleFor(j => j.Name).NotNull();
 
-            RuleFor(j => j.Phone).NotEmpty();
+            RuleFor(j => j.Name).NotNull();
+            RuleFor(j => j.Name).NotEmpty()
+                .Matches("^[A-Za-z]+$")
+                .WithMessage("Only alphabetical letters");
+
             RuleFor(j => j.Phone).NotNull();
+            RuleFor(j => j.Phone).NotEmpty();
 
             RuleFor(j => j.Email).NotNull();
-            RuleFor(j => j.Email).NotEmpty().EmailAddress();
+            RuleFor(j => j.Email).NotEmpty()
+                .EmailAddress();
 
             RuleFor(j => j.DocumentNumber).NotNull();
-            RuleFor(j => j.DocumentNumber).NotEmpty()
+            RuleFor(j => j.DocumentNumber)
                 .Must(ValidDocument)
                 .WithMessage("Invalid Document");
 
@@ -47,6 +50,7 @@ namespace Jago.CrossCutting.Validation
             var result = _passengerRepository.GetPax().Where(_ => _.DocumentNumber == document);
             if (!result.Any())
                 return true;
+
             return false;
         }
     }
