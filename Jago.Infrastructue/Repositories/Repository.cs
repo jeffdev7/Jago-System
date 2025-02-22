@@ -45,7 +45,7 @@ namespace Jago.Infrastructure.Repositories
         }
         public IQueryable<TEntity> GetAllBy(Func<TEntity, bool> exp)
         {
-            throw new NotImplementedException();
+            return _dbSet.Where(exp).AsQueryable();
         }
 
         public TEntity GetBy(Func<TEntity, bool> exp)

@@ -41,9 +41,28 @@ namespace Jago.Application.Services
             Dispose();
             return travel;
         }
-        public Trip GetById(Guid id)
+        public TripViewModel GetTripDetails(Guid id)
         {
-            return _mapper.Map<Trip>(_tripRepository.GetById(id));
+            var travel = _tripRepository.GetAll()
+                  .Include(j => j.Passenger)
+                  .Where(_ => _.Id == id)
+                  .Select(j => new TripViewModel
+                  {
+                      Id = j.Id,
+                      Origin = j.Origin,
+                      Destine = j.Destine,
+                      Departure = j.Departure,
+                      Arrival = j.Arrival,
+                      PassengerId = j.PassengerId,
+                      PaxName = j.Passenger.Name
+
+                  }).AsNoTracking().FirstOrDefault();
+            Dispose();
+            return travel;
+        }
+        public TripViewModel GetById(Guid id)
+        {
+            return _mapper.Map<TripViewModel>(_tripRepository.GetById(id));
         }
         public IEnumerable<TripViewModel> GetAllBy(Func<Trip, bool> exp)
         {

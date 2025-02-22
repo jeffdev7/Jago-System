@@ -1,6 +1,5 @@
-﻿@model Trip
+﻿@model TripViewModel
 @using Jago.CrossCutting.Dto
-@using Jago.domain.Core.Entities
 
 @{
     ViewData["Title"] = "Details";
@@ -37,10 +36,10 @@
             @Html.DisplayFor(model => model.Arrival)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Passenger.Name)
+            @Html.DisplayNameFor(model => model.PaxName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Passenger.Name)
+            @Html.DisplayFor(model => model.PaxName)
         </dd>
     </dl>
 </div>

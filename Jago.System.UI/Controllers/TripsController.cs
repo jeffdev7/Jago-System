@@ -32,20 +32,11 @@ namespace Jago.System.UI.Controllers
         }
 
         // GET: Trips/Details
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var trip = await Db.Trips
-                 .Include(t => t.Passenger)
-                 .FirstOrDefaultAsync(m => m.Id == id);
+            var trip = _tripServices.GetTripDetails(id);
             if (trip == null)
-            {
                 return NotFound();
-            }
 
             return View(trip);
         }
@@ -60,12 +51,20 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TripViewModel trip)
+        public IActionResult Create(TripViewModel vm)
         {
-            var result = _tripServices.Add(trip);
+            var result = _tripServices.Add(vm);
 
             if (!result.IsValid)
-                TempData["success"] = "Trip WAS NOT ADDED";
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+                LoadViewBags();
+                return View(vm);
+            }
+
             else
                 TempData["success"] = "Trip added successfully";
 
@@ -90,12 +89,19 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(TripViewModel trip)
+        public IActionResult Edit(TripViewModel vm)
         {
-            var result = _tripServices.Update(trip);
+            var result = _tripServices.Update(vm);
 
             if (!result.IsValid)
-                TempData["success"] = "Trip WAS NOT UPDATED";
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+                LoadViewBags();
+                return View(vm);
+            }
             else
                 TempData["success"] = "Trip updated successfully";
 

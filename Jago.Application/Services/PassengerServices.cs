@@ -21,9 +21,9 @@ namespace Jago.Application.Services
         {
             return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetAll());
         }
-        public Passenger GetById(Guid id)
+        public PassengerViewModel GetById(Guid id)
         {
-            return _mapper.Map<Passenger>(_paxRepository.GetById(id));
+            return _mapper.Map<PassengerViewModel>(_paxRepository.GetById(id));
         }
         public IEnumerable<PassengerViewModel> GetAllBy(Func<Passenger, bool> exp)
         {

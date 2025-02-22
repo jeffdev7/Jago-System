@@ -4,6 +4,7 @@ using Jago.CrossCutting.Dto;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Jago.System.UI.Controllers
 {
@@ -30,19 +31,12 @@ namespace Jago.System.UI.Controllers
         }
 
         // GET: Passengers/Details
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var passenger = _paxServices.GetById(id);
 
-            var passenger = await Db.Passengers
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (passenger == null)
-            {
-                return NotFound();
-            }
+                return NotFound();           
 
             return View(passenger);
         }
@@ -59,13 +53,19 @@ namespace Jago.System.UI.Controllers
         public IActionResult Create(PassengerViewModel vm)
         {
             if (!ModelState.IsValid)
-            {
                 return View(vm);
-            }
+            
             var result = _paxServices.Add(vm);
 
             if (!result.IsValid)
-                TempData["success"] = "ERROR PASSENGER WAS NOT ADDED";
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(vm);
+            }
 
             else
             {
@@ -81,6 +81,7 @@ namespace Jago.System.UI.Controllers
             var item = _paxServices.GetById(id);
             if (item == null)
                 return BadRequest();
+
             LoadViewBags();
 
             return View(item);
@@ -88,12 +89,19 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(PassengerViewModel pax)
+        public IActionResult Edit(PassengerViewModel vm)
         {
-            var result = _paxServices.Update(pax);
+            var result = _paxServices.Update(vm);
 
             if (!result.IsValid)
-                TempData["success"] = "Passenger WAS NOT UPDATED";
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(vm);
+            }
             else
             {
                 TempData["success"] = "Passenger updated successfully";

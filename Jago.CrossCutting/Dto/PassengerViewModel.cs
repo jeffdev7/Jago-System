@@ -2,7 +2,7 @@
 
 namespace Jago.CrossCutting.Dto
 {
-    public class PassengerViewModel 
+    public class PassengerViewModel
     {
         [Key]
         public Guid Id { get; set; }

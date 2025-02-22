@@ -8,7 +8,7 @@ namespace Jago.Application.Services
     public interface IPassengerServices : IDisposable
     {
         IEnumerable<PassengerViewModel> GetAll();
-        Passenger GetById(Guid id);
+        PassengerViewModel GetById(Guid id);
         IEnumerable<PassengerViewModel> GetAllBy(Func<Passenger, bool> exp);
         ValidationResult Add(PassengerViewModel vm);
         ValidationResult Update(PassengerViewModel vm);

@@ -7,7 +7,7 @@ namespace Jago.CrossCutting.Validation
     {
         public AddTripValidator()
         {
-            RuleFor(j => j.PassengerId).NotEmpty();
+            RuleFor(j => j.PaxName).NotEmpty().WithMessage("Select a passenger");
             RuleFor(j => j.Origin).NotEmpty();
             RuleFor(j => j.Origin).NotNull();
             RuleFor(j => j.Departure).NotNull();
