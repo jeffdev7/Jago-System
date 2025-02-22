@@ -62,45 +62,53 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Passenger vm)
+        public IActionResult Create(PassengerViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
-            Db.Passengers.Add(vm);
-            Db.SaveChanges();
-            TempData["success"] = "Passenger added successfully";
+            var result = _paxServices.Add(vm);
+
+            if(!result.IsValid)
+                TempData["success"] = "ERROR PASSENGER WAS NOT ADDED";
+
+            else
+            {
+                TempData["success"] = "Passenger added successfully";
+            }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            var item = Db.Passengers.FirstOrDefault(j => j.Id == id);
-            if (item == null) return BadRequest();
+            var item = Db.Passengers.FirstOrDefault(j => j.Id == id);//TODO 
+            if (item == null) 
+                return BadRequest();
             LoadViewBags();
             return View(item);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Passenger pax)
+        public IActionResult Edit(PassengerViewModel pax)
         {
-            LoadViewBags();
-            if (!ModelState.IsValid)
-                return View(pax);
+            var result = _paxServices.Update(pax);
 
-            var item = Db.Passengers.AsNoTracking().Where(_ => _.Id == pax.Id);
-            if (item == null) return BadRequest();
-            Db.Entry(pax).State = EntityState.Modified;
-            Db.SaveChanges();
-            TempData["success"] = "Passenger updated successfully";
+            if(!result.IsValid)
+                TempData["success"] = "Passenger WAS NOT UPDATED";
+            else
+            {
+                TempData["success"] = "Passenger updated successfully";
+            }
+
             return RedirectToAction("Index");
         }
 
         // GET: Passengers/Delete
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)//TODO
         {
             if (id == null)
             {
@@ -122,9 +130,7 @@ namespace Jago.System.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var passenger = await Db.Passengers.FindAsync(id);
-            Db.Passengers.Remove(passenger);
-            await Db.SaveChangesAsync();
+            var result = _paxServices.Remove(id);
             TempData["success"] = "Passenger deleted successfully";
             return RedirectToAction(nameof(Index));
         }

@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Jago.domain.Core.Entities
 {
-    public class Trip : IEntityTypeConfiguration<Trip>
+    public class Trip : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Origin { get; set; }
         public string Destine { get; set; }
         public DateTime Departure { get; set; }
@@ -25,8 +23,6 @@ namespace Jago.domain.Core.Entities
             };
         public void Configure(EntityTypeBuilder<Trip> builder)
         {
-            builder.HasKey(j => j.Id);
-            builder.Property(j => j.Id).IsRequired();
             builder.Property(j => j.Origin).IsRequired();
             builder.Property(j => j.Destine).IsRequired();
             builder.Property(j => j.Departure).IsRequired();

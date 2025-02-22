@@ -1,4 +1,5 @@
 ﻿using Jago.domain.Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -6,7 +7,7 @@ namespace Jago.Infrastructure.DBConfiguration
 {
     public interface IAppDbContext { }
 
-    public class ApplicationContext : IdentityDbContext<ApplicationUser>, IAppDbContext
+    public class ApplicationContext : IdentityDbContext
     {
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Trip> Trips { get; set; }

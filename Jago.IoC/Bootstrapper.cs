@@ -28,7 +28,7 @@ namespace Jago.IoC
             services.AddScoped<ITripServices, TripServices>();
 
             services.AddDbContext<ApplicationContext>();
-            services.AddTransient<IAppDbContext, ApplicationContext>();
+            //services.AddTransient<IAppDbContext, ApplicationContext>();
         }
     }
 }

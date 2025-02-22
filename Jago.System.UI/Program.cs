@@ -23,8 +23,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationContext>();
 
 Bootstrapper.RegisterServices(builder.Services);
+builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -40,8 +40,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-builder.Services.AddScoped<ApplicationContext>();
 
 app.MapControllerRoute(
     name: "default",
