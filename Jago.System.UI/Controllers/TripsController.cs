@@ -29,7 +29,7 @@ namespace Jago.System.UI.Controllers
 
         public override IEnumerable<TripViewModel> GetRows()
         {
-            return _tripServices.GetOrder();
+            return _tripServices.GetAll();
         }
         public override TripViewModel GetRow(Guid id)
         {
@@ -66,17 +66,15 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Trip trip)
+        public IActionResult Create(TripViewModel trip)
         {
-            LoadViewBags();
-            if (ModelState.IsValid)
-            {
-                return View(trip);
+            var result = _tripServices.Add(trip);
 
-            }
-            Db.Trips.Add(trip);
-            Db.SaveChanges();
-            TempData["success"] = "Trip added successfully";
+            if(!result.IsValid)
+                TempData["success"] = "Trip WAS NOT ADDED";
+            else
+                TempData["success"] = "Trip added successfully";
+
             return RedirectToAction("Index");
 
         }
@@ -86,7 +84,7 @@ namespace Jago.System.UI.Controllers
         public IActionResult Edit(Guid id)
         {
             LoadViewBags();
-            var item = Db.Trips.FirstOrDefault(j => j.Id == id);
+            var item = Db.Trips.FirstOrDefault(j => j.Id == id);//TODO
             if (item == null) return BadRequest();
             return View(item);
 
@@ -94,17 +92,15 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Trip trip)
+        public IActionResult Edit(TripViewModel trip)
         {
-            LoadViewBags();
-            if (ModelState.IsValid)
-            {
-                return View(trip);
+            var result = _tripServices.Update(trip);
 
-            }
-            Db.Trips.Update(trip);
-            Db.SaveChanges();
-            TempData["success"] = "Trip updated successfully";
+            if(!result.IsValid)
+                TempData["success"] = "Trip WAS NOT UPDATED";
+            else
+                TempData["success"] = "Trip updated successfully";
+
             return RedirectToAction("Index");
         }
 
@@ -134,9 +130,8 @@ namespace Jago.System.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var trip = await Db.Trips.FindAsync(id);
-            Db.Trips.Remove(trip);
-            await Db.SaveChangesAsync();
+            var result = await _tripServices.Remove(id);
+
             TempData["success"] = "Trip deleted successfully";
             return RedirectToAction(nameof(Index));
 
