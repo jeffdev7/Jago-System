@@ -5,12 +5,6 @@ namespace Jago.System.UI.Controllers
 {
     public abstract class BaseController<TViewModel> : Controller where TViewModel : class, new()
     {
-        protected readonly ApplicationContext Db;
-
-        protected BaseController(ApplicationContext db)
-        {
-            Db = db;
-        }
         protected BaseController()
         {            
         }
