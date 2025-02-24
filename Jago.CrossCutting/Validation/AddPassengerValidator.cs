@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Jago.CrossCutting.Dto;
+using Jago.CrossCutting.Helper;
 using Jago.domain.Interfaces.Repositories;
 using System.Text.RegularExpressions;
 
@@ -35,16 +36,9 @@ namespace Jago.CrossCutting.Validation
                 .WithMessage("This document already exists in our base");
 
         }
-        private static bool ValidDocument(string document)//EXTENT THIS METHOD
-        {
-            var patternRg = @"(^\d{1,2}).?(\d{3}).?(\d{3})-?(\d{1}|X|x$)";
-            var patternCpf = @"(^\d{3}\.\d{3}\.\d{3}\-\d{2}$)";
-
-            if (Regex.IsMatch(document, patternRg) || Regex.IsMatch(document, patternCpf))
-                return true;
-
-            return false;
-        }
+        private static bool ValidDocument(string document)=>
+            document.IsValidDocument();
+        
         private bool IsDocumentUnique(string document)
         {
             var result = _passengerRepository.GetPax().Where(_ => _.DocumentNumber == document);

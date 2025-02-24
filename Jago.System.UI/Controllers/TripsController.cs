@@ -111,13 +111,11 @@ namespace Jago.System.UI.Controllers
         [HttpGet]
         public IActionResult Delete(Guid id)
         {
-            var trip = _tripServices.GetById(id);
+            var trip = _tripServices.GetTripDetails(id);
 
             if (trip == null)
-            {
                 return NotFound();
-            }
-
+            
             return View(trip);
         }
 
