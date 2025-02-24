@@ -35,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PassengerId" class="control-label">Passenger</label>
-                <select disabled asp-for="PassengerId" class ="form-control">
+                <select asp-for="PassengerId" class ="form-control">
                         <option value="0">Selecione</option>
                         @foreach (var item in ViewBag.Passengers)
                         {

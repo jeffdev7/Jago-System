@@ -2,7 +2,6 @@
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Helper;
 using Jago.domain.Interfaces.Repositories;
-using System.Text.RegularExpressions;
 
 namespace Jago.CrossCutting.Validation
 {
@@ -36,9 +35,9 @@ namespace Jago.CrossCutting.Validation
                 .WithMessage("This document already exists in our base");
 
         }
-        private static bool ValidDocument(string document)=>
+        private static bool ValidDocument(string document) =>
             document.IsValidDocument();
-        
+
         private bool IsDocumentUnique(string document)
         {
             var result = _passengerRepository.GetPax().Where(_ => _.DocumentNumber == document);

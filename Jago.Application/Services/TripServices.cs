@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
 using Jago.CrossCutting.Dto;
+using Jago.CrossCutting.Helper;
 using Jago.CrossCutting.Validation;
 using Jago.domain.Core.Entities;
 using Jago.domain.Interfaces.Repositories;
@@ -71,6 +72,12 @@ namespace Jago.Application.Services
         public ValidationResult Add(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+            var arrivalAdjustment = DateTime.Now;
+
+            if (vm.Departure <= vm.Arrival)
+                arrivalAdjustment = entity.Arrival.AddHours(3);
+            entity.Arrival = arrivalAdjustment;
+
             var validationResult = new AddTripValidator().Validate(vm);
             if (validationResult.IsValid)
                 _tripRepository.Add(entity);
@@ -78,10 +85,6 @@ namespace Jago.Application.Services
             return validationResult;
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
         public async Task<bool> Remove(Guid id)
         {
             return await _tripRepository.RemoveTripAsync(id);
@@ -90,6 +93,10 @@ namespace Jago.Application.Services
         public ValidationResult Update(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+
+            if (vm.Arrival.TimeOfDay == vm.Departure.TimeOfDay)
+                return ErrorCatalog.CustomErrors();
+
             var validationResult = new AddTripValidator().Validate(vm);
             if (validationResult.IsValid)
                 _tripRepository.Update(entity);
@@ -108,5 +115,10 @@ namespace Jago.Application.Services
         {
             throw new NotImplementedException();
         }
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
     }
 }

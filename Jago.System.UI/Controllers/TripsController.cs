@@ -115,7 +115,7 @@ namespace Jago.System.UI.Controllers
 
             if (trip == null)
                 return NotFound();
-            
+
             return View(trip);
         }
 

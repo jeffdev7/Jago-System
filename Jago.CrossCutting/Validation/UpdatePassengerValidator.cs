@@ -2,7 +2,6 @@
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Helper;
 using Jago.domain.Interfaces.Repositories;
-using System.Text.RegularExpressions;
 
 namespace Jago.CrossCutting.Validation
 {
