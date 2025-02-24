@@ -8,11 +8,9 @@ namespace Jago.System.UI.Controllers
 {
     public class PassengersController : BaseController<PassengerViewModel>
     {
-
-        private readonly ApplicationContext _context;
         private readonly IPassengerServices _paxServices;
 
-        public PassengersController(IPassengerServices paxServices, ApplicationContext db) : base(db)
+        public PassengersController(IPassengerServices paxServices)
         {
             _paxServices = paxServices;
         }
@@ -130,10 +128,6 @@ namespace Jago.System.UI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PassengerExists(Guid id)
-        {
-            return _context.Passengers.Any(e => e.Id == id);
-        }
         public override void LoadViewBags()
         {
             LoadAsync();

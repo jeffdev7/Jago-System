@@ -7,9 +7,12 @@ namespace Jago.System.UI.Controllers
     {
         protected readonly ApplicationContext Db;
 
-        public BaseController(ApplicationContext db)
+        protected BaseController(ApplicationContext db)
         {
             Db = db;
+        }
+        protected BaseController()
+        {            
         }
 
         public abstract IEnumerable<TViewModel> GetRows();

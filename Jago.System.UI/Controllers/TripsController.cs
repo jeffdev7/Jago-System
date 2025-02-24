@@ -1,19 +1,16 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
-using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
     public class TripsController : BaseController<TripViewModel>
     {
-        private readonly ApplicationContext db;
         private readonly ITripServices _tripServices;
         private readonly IPassengerServices _passengerServices;
 
-        public TripsController(ITripServices tripServices, IPassengerServices passengerServices,
-            ApplicationContext db) : base(db)
+        public TripsController(ITripServices tripServices, IPassengerServices passengerServices)
         {
             _tripServices = tripServices;
             _passengerServices = passengerServices;
@@ -129,11 +126,6 @@ namespace Jago.System.UI.Controllers
             TempData["success"] = "Trip deleted successfully";
             return RedirectToAction(nameof(Index));
 
-        }
-
-        private bool TripExists(Guid id)
-        {
-            return Db.Trips.Any(e => e.Id == id);
         }
 
         public override void LoadViewBags()
