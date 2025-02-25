@@ -53,6 +53,72 @@ namespace Jago.Test.Application
             Assert.IsAssignableFrom<IEnumerable<TripViewModel>>(result);
         }
 
+        [Fact]
+        public void SHOULD_GET_SORTEDTRIPS()
+        {
+            //arrange
+            var listResult = new List<TripViewModel>()
+            {
+                new TripViewModel
+                {
+                   PaxName = "John",
+                   PassengerId = Guid.NewGuid(),
+                   Arrival = DateTime.Now.AddDays(2),
+                   Departure = DateTime.Now.AddDays(1),
+                   Destine = "MDV",
+                   Origin = "GRU"
+                },
+                new TripViewModel
+                {
+                    PaxName = "John",
+                    PassengerId = Guid.NewGuid(),
+                    Arrival = DateTime.Now.AddDays(2),
+                    Departure = DateTime.Now.AddDays(1),
+                    Destine = "MDV",
+                    Origin = "GRU"
+                }
+            };
+
+            _tripServices.Setup(_ => _.GetSortedTrips())
+                .Returns(listResult);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = _tripServices.Object.GetSortedTrips();
+
+            //assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<TripViewModel>>(result);
+        }
+
+        [Theory]
+        [InlineData("e13e6434-88f1-4bec-8300-4a3991b7107b")]
+        public void SHOULD_GET_TRIPDETAILS(string tripId)
+        {
+            //arrange
+            var id = Guid.Parse(tripId);
+            var detailedTrip = new TripViewModel
+            {
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now.AddDays(2),
+                Departure = DateTime.Now.AddDays(1),
+                Destine = "MDV",
+                Origin = "GRU"
+            };
+            
+            _tripServices.Setup(_ => _.GetTripDetails(It.IsAny<Guid>()))
+                .Returns(detailedTrip);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = _tripServices.Object.GetTripDetails(id);
+
+            //assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<TripViewModel>(result);
+        }
+
         [Theory]
         [InlineData("e13e6434-88f1-4bec-8300-4a3991b7107b")]
         public void SHOULD_GET_TRIPBYID(string tripId)
@@ -188,6 +254,32 @@ namespace Jago.Test.Application
 
             //assert
             Assert.True(result.IsValid);
+        }
+
+        [Fact]
+        public void SHOULD_GET_PAXLIST()
+        {
+            //arrange
+            var listResult = new List<PaxListModel>()
+            {
+                new PaxListModel
+                {
+                   Id = Guid.NewGuid(),
+                   Name = "John"
+                }
+            }.AsQueryable();
+
+            _tripServices.Setup(_ => _.GetPaxList())
+                .Returns(listResult);
+            _tripRepository.Setup(_ => _.GetPaxList()).Returns((IQueryable<PaxListModel>)listResult);
+            var tripServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = tripServiceMock.GetPaxList();
+
+            //assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<PaxListModel>>(result);
         }
     }
 }
