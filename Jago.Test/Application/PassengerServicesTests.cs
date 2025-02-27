@@ -187,5 +187,73 @@ namespace Jago.Test.Application
             Assert.True(result.IsValid);
         }
 
+        [Fact]
+        public void SHOULDNOT_ADD_PASSENGER_RETURNS_ALLVALIDATIONERRORS()
+        {
+            //arrange
+            var pax = new PassengerViewModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "",
+                DocumentNumber = "38653",
+                Phone = "",
+                Email = "",
+            };
+            var expectedPassenger = new PassengerViewModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "Pax1",
+                DocumentNumber = "documentRG",
+                Phone = "1425",
+                Email = "pax@hotmail.com",
+            };
+            var passengerEntity = Passenger.Create("pax", "", "", "");
+
+            _mapper.Setup(map => map.Map<Passenger>(It.IsAny<PassengerViewModel>())).Returns(passengerEntity);
+            _mapper.Setup(map => map.Map<PassengerViewModel>(It.IsAny<Passenger>())).Returns(expectedPassenger);
+            _paxRepository.Setup(_ => _.Add(It.IsAny<Passenger>()));
+
+            _paxServices.Setup(_ => _.Add(It.IsAny<PassengerViewModel>())).Returns(new ValidationResult());
+
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+
+            //act
+            var result = projectServiceMock.Add(pax);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);
+        }
+
+        [Fact]
+        public void SHOULDNOT_UPDATE_PASSENGER_RETURNS_ALLVALIDATIONERRORS()
+        {
+            //arrange
+            var expectedPassenger = new PassengerViewModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "Pax3",
+                DocumentNumber = "3576545",
+                Phone = "",
+                Email = "paxhotmail.com",
+            };
+            var passengerEntity = Passenger.Create("pax", "", "", "");
+
+            _mapper.Setup(map => map.Map<Passenger>(It.IsAny<PassengerViewModel>())).Returns(passengerEntity);
+            _mapper.Setup(map => map.Map<PassengerViewModel>(It.IsAny<Passenger>())).Returns(expectedPassenger);
+            _paxRepository.Setup(_ => _.Update(It.IsAny<Passenger>()));
+
+            _paxServices.Setup(_ => _.Update(It.IsAny<PassengerViewModel>()))
+                .Returns(new ValidationResult());
+
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+
+            //act
+            var result = projectServiceMock.Update(expectedPassenger);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);  
+        }
     }
 }

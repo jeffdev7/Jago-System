@@ -40,15 +40,6 @@ namespace Jago.Application.Services
 
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
-        public IEnumerable<PassengerViewModel> GetPax()
-        {
-            return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetPax());
-        }
-
         public async Task<bool> Remove(Guid id)
         {
             return await _paxRepository.RemovePassengerAsync(id);
@@ -65,6 +56,14 @@ namespace Jago.Application.Services
             }
 
             return validationResult;
+        }
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+        public IEnumerable<PassengerViewModel> GetPax()
+        {
+            return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetPax());
         }
     }
 }

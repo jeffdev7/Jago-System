@@ -281,5 +281,173 @@ namespace Jago.Test.Application
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IEnumerable<PaxListModel>>(result);
         }
+
+        [Fact]
+        public void SHOULDNOT_ADD_TRIP_RETURNS_DATEVALITIONERRORS()
+        {
+            //arrange
+            var trip = new TripViewModel
+            {
+                Id = Guid.NewGuid(),
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now,
+                Departure = DateTime.Now,
+                Destine = "MVD",
+                Origin = "GRU"
+            };
+            var expectedTrip = new TripViewModel
+            {
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now.AddDays(2),
+                Departure = DateTime.Now.AddDays(1),
+                Destine = "MDV",
+                Origin = "GRU"
+            };
+            var tripEntity = Trip.Create("MVD", "GRU", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), trip.PassengerId);
+
+            _mapper.Setup(map => map.Map<Trip>(It.IsAny<TripViewModel>())).Returns(tripEntity);
+            _mapper.Setup(map => map.Map<TripViewModel>(It.IsAny<Trip>())).Returns(expectedTrip);
+            _tripRepository.Setup(_ => _.Add(It.IsAny<Trip>()));
+
+            _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
+
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = projectServiceMock.Add(trip);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);
+        }
+        
+        [Fact]
+        public void SHOULDNOT_ADD_TRIP_WHEN_DEPARTUREISTODAY()
+        {
+            //arrange
+            var trip = new TripViewModel
+            {
+                Id = Guid.NewGuid(),
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now.AddDays(1),
+                Departure = DateTime.Now,
+                Destine = "MVD",
+                Origin = "GRU"
+            };
+            var expectedTrip = new TripViewModel
+            {
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now.AddDays(2),
+                Departure = DateTime.Now.AddDays(1),
+                Destine = "MDV",
+                Origin = "GRU"
+            };
+            var tripEntity = Trip.Create("MVD", "GRU", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), trip.PassengerId);
+
+            _mapper.Setup(map => map.Map<Trip>(It.IsAny<TripViewModel>())).Returns(tripEntity);
+            _mapper.Setup(map => map.Map<TripViewModel>(It.IsAny<Trip>())).Returns(expectedTrip);
+            _tripRepository.Setup(_ => _.Add(It.IsAny<Trip>()));
+
+            _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
+
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = projectServiceMock.Add(trip);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);
+        }
+
+        [Fact]
+        public void SHOULDNOT_ADD_TRIP_WITHOUTPASSENGER()
+        {
+            //arrange
+            var trip = new TripViewModel
+            {
+                Id = Guid.NewGuid(),
+                PaxName = "John",
+                PassengerId = Guid.Empty,
+                Arrival = DateTime.Now.AddDays(2),
+                Departure = DateTime.Now.AddDays(1),
+                Destine = "MVD",
+                Origin = "GRU"
+            };
+            var expectedTrip = new TripViewModel
+            {
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now.AddDays(2),
+                Departure = DateTime.Now.AddDays(1),
+                Destine = "MDV",
+                Origin = "GRU"
+            };
+            var tripEntity = Trip.Create("MVD", "GRU", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), trip.PassengerId);
+
+            _mapper.Setup(map => map.Map<Trip>(It.IsAny<TripViewModel>())).Returns(tripEntity);
+            _mapper.Setup(map => map.Map<TripViewModel>(It.IsAny<Trip>())).Returns(expectedTrip);
+            _tripRepository.Setup(_ => _.Add(It.IsAny<Trip>()));
+
+            _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
+
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = projectServiceMock.Add(trip);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);
+        }
+
+        [Fact]
+        public void SHOULDNOT_UPDATE_TRIP_WHEN_EQUALDATES()
+        {
+            //arrange
+            DateTime fixedDateTime = new DateTime(2024, 2, 27, 14, 30, 0);
+            DateTime anotherDateTime = fixedDateTime;
+
+            var trip = new TripViewModel
+            {
+                Id = Guid.NewGuid(),
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = DateTime.Now,
+                Departure = DateTime.Now,
+                Destine = "MVD",
+                Origin = "GRU"
+            };
+            var expectedTrip = new TripViewModel
+            {
+                PaxName = "John",
+                PassengerId = Guid.NewGuid(),
+                Arrival = fixedDateTime,
+                Departure = anotherDateTime,
+                Destine = "MDV",
+                Origin = "FOR"
+            };
+            var tripEntity = Trip.Create("MVD", "GRU", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), trip.PassengerId);
+
+            _mapper.Setup(map => map.Map<Trip>(It.IsAny<TripViewModel>())).Returns(tripEntity);
+            _mapper.Setup(map => map.Map<TripViewModel>(It.IsAny<Trip>())).Returns(expectedTrip);
+            _tripRepository.Setup(_ => _.Update(It.IsAny<Trip>()));
+
+            _tripServices.Setup(_ => _.Update(It.IsAny<TripViewModel>()))
+                .Returns(new ValidationResult());
+
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+
+            //act
+            var result = projectServiceMock.Update(expectedTrip);
+
+            //assert
+            Assert.False(result.IsValid);
+            Assert.NotEmpty(result.Errors);
+        }
     }
 }
