@@ -1,20 +1,16 @@
 ﻿#nullable disable
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Jago.Infrastructure.DBConfiguration;
-using Jago.domain.Core.Entities;
 using Jago.Application.Services;
-using Jago.Application.ViewModel;
+using Jago.CrossCutting.Dto;
+using Jago.Infrastructure.DBConfiguration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
     public class PassengersController : BaseController<PassengerViewModel>
     {
-
-        private readonly ApplicationContext _context;
         private readonly IPassengerServices _paxServices;
 
-        public PassengersController(IPassengerServices paxServices, ApplicationContext db) : base(db)
+        public PassengersController(IPassengerServices paxServices)
         {
             _paxServices = paxServices;
         }
@@ -22,11 +18,6 @@ namespace Jago.System.UI.Controllers
         public override IEnumerable<PassengerViewModel> GetRows()
         {
             return _paxServices.GetAll();
-        }
-        public override PassengerViewModel GetRow(Guid id)
-        {
-            return _paxServices.GetById(id);
-
         }
 
         // GET: Passengers
@@ -36,19 +27,12 @@ namespace Jago.System.UI.Controllers
         }
 
         // GET: Passengers/Details
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var passenger = _paxServices.GetById(id);
 
-            var passenger = await Db.Passengers
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (passenger == null)
-            {
                 return NotFound();
-            }
 
             return View(passenger);
         }
@@ -62,53 +46,70 @@ namespace Jago.System.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Passenger vm)
+        public IActionResult Create(PassengerViewModel vm)
         {
             if (!ModelState.IsValid)
+                return View(vm);
+
+            var result = _paxServices.Add(vm);
+
+            if (!result.IsValid)
             {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
                 return View(vm);
             }
-            Db.Passengers.Add(vm);
-            Db.SaveChanges();
-            TempData["success"] = "Passenger added successfully";
+
+            else
+            {
+                TempData["success"] = "Passenger added successfully";
+            }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Edit (Guid id)
+        public IActionResult Edit(Guid id)
         {
-            var item = Db.Passengers.FirstOrDefault(j=>j.Id == id);
-            if(item == null) return BadRequest();
+            var item = _paxServices.GetById(id);
+            if (item == null)
+                return BadRequest();
+
             LoadViewBags();
+
             return View(item);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Passenger pax)
+        public IActionResult Edit(PassengerViewModel vm)
         {
-            LoadViewBags();
-            if (!ModelState.IsValid)
-                return View(pax);           
+            var result = _paxServices.Update(vm);
 
-            var item = Db.Passengers.AsNoTracking().Where(_ => _.Id == pax.Id);
-            if (item == null) return BadRequest();
-            Db.Entry(pax).State = EntityState.Modified;
-            Db.SaveChanges();
-            TempData["success"] = "Passenger updated successfully";
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(vm);
+            }
+            else
+            {
+                TempData["success"] = "Passenger updated successfully";
+            }
+
             return RedirectToAction("Index");
         }
 
         // GET: Passengers/Delete
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var passenger = await Db.Passengers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var passenger = _paxServices.GetById(id);
             if (passenger == null)
             {
                 return NotFound();
@@ -117,26 +118,25 @@ namespace Jago.System.UI.Controllers
             return View(passenger);
         }
 
-       // POST: Passengers/Delete
+        // POST: Passengers/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var passenger = await Db.Passengers.FindAsync(id);
-            Db.Passengers.Remove(passenger);
-            await Db.SaveChangesAsync();
+            var result = await _paxServices.Remove(id);
             TempData["success"] = "Passenger deleted successfully";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PassengerExists(Guid id)
-        {
-            return _context.Passengers.Any(e => e.Id == id);
-        }
         public override void LoadViewBags()
         {
             LoadAsync();
         }
         public async void LoadAsync() { }
+
+        public override PassengerViewModel GetRow(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

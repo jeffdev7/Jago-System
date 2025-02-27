@@ -1,16 +1,12 @@
-﻿using FluentValidation.Results;
-using Jago.Infrastructure.DBConfiguration;
+﻿using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
     public abstract class BaseController<TViewModel> : Controller where TViewModel : class, new()
     {
-        protected readonly ApplicationContext Db;
-
-        public BaseController(ApplicationContext db)
-        {
-            Db = db;
+        protected BaseController()
+        {            
         }
 
         public abstract IEnumerable<TViewModel> GetRows();

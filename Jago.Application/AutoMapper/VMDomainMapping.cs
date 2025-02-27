@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Jago.Application.ViewModel;
+using Jago.CrossCutting.Dto;
 using Jago.domain.Core.Entities;
 
 namespace Jago.Application.AutoMapper

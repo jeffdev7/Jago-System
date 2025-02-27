@@ -8,5 +8,7 @@ namespace Jago.domain.Interfaces.Repositories
         IQueryable<Passenger> GetPax();
         bool IsValidPassengerId(Guid passengerId);
         IQueryable<PaxListModel> GetPaxList();
+        Task<bool> RemoveTripAsync(Guid Id);
+
     }
 }

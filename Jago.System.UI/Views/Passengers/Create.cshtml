@@ -1,6 +1,7 @@
-﻿@using Jago.domain.Core.Entities
+﻿@using Jago.CrossCutting.Dto
+@using Jago.domain.Core.Entities
 
-@model Passenger
+@model PassengerViewModel
 
 
 <br />
@@ -16,19 +17,14 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RG" class="control-label"></label>
-                <input asp-for="RG" class="form-control" />
-                <span asp-validation-for="RG" class="text-danger"></span>
+                <label asp-for="DocumentNumber" class="control-label"></label>
+                <input asp-for="DocumentNumber" class="form-control" />
+                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CPF" class="control-label"></label>
-                <input asp-for="CPF" class="form-control" />
-                <span asp-validation-for="CPF" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>

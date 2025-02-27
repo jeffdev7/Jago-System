@@ -6,67 +6,55 @@ namespace Jago.Infrastructure.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly DbSet<TEntity> DbSet;
-        protected readonly ApplicationContext Db;
+        protected readonly DbSet<TEntity> _dbSet;
+        protected readonly ApplicationContext _context;
 
         public Repository(ApplicationContext context)
         {
-            Db = context;
-            DbSet = Db.Set<TEntity>();
-            
+            _context = context;
+            _dbSet = _context.Set<TEntity>();
+
         }
         public void Add(TEntity obj)
         {
-            DbSet.Add(obj);
+            _dbSet.Add(obj);
             SaveChanges();
         }
 
-        public bool Any(Func<TEntity, bool> exp)
+        public IQueryable<TEntity> GetAll() => _dbSet.AsNoTracking();
+
+        public TEntity GetById(Guid id) => _dbSet.Find(id)!;
+
+        public void Remove(Guid id)
         {
-            return DbSet.Any(exp);
+            _dbSet.Remove(_dbSet.Find(id)!);
+            SaveChanges();
         }
 
+        public int SaveChanges() => _context.SaveChanges();
+
+        public void Update(TEntity obj)
+        {
+            _dbSet.Update(obj);
+            SaveChanges();
+        }
         public void Dispose()
         {
-            Db.Dispose();
+            _context.Dispose();
             GC.SuppressFinalize(this);
         }
-
-        public IQueryable<TEntity> GetAll()
-        {
-            return DbSet.AsNoTracking();
-        }
-
         public IQueryable<TEntity> GetAllBy(Func<TEntity, bool> exp)
         {
-            return DbSet.Where(exp).AsQueryable();
+            return _dbSet.Where(exp).AsQueryable();
         }
 
         public TEntity GetBy(Func<TEntity, bool> exp)
         {
-            return DbSet.FirstOrDefault(exp);
+            throw new NotImplementedException();
         }
-
-        public TEntity GetById(Guid id)
+        public bool Any(Func<TEntity, bool> exp)
         {
-            return DbSet.Find(id);
-        }
-
-        public void Remove(Guid id)
-        {
-            DbSet.Remove(DbSet.Find(id));
-            SaveChanges();
-        }
-
-        public int SaveChanges()
-        {
-            return Db.SaveChanges();
-        }
-
-        public void Update(TEntity obj)
-        {
-            DbSet.Update(obj);
-            SaveChanges();
+            throw new NotImplementedException();
         }
     }
 }

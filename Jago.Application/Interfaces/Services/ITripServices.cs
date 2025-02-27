@@ -1,11 +1,5 @@
 ﻿using FluentValidation.Results;
-using Jago.Application.ViewModel;
-using Jago.domain.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Jago.CrossCutting.Dto;
 
 namespace Jago.Application.Services
 {
@@ -13,12 +7,12 @@ namespace Jago.Application.Services
     {
         IEnumerable<TripViewModel> GetAll();
         TripViewModel GetById(Guid id);
-        IEnumerable<TripViewModel> GetAllBy(Func<Trip, bool> exp);
         ValidationResult Add(TripViewModel vm);
         ValidationResult Update(TripViewModel vm);
-        ValidationResult Remove(Guid id);
+        Task<bool> Remove(Guid id);
         IEnumerable<PassengerViewModel> GetPax();
         IEnumerable<PaxListModel> GetPaxList();
-        IEnumerable<TripViewModel> GetOrder();
+        IEnumerable<TripViewModel> GetSortedTrips();
+        TripViewModel GetTripDetails(Guid id);
     }
 }
