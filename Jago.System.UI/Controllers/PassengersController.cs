@@ -2,10 +2,12 @@
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.Infrastructure.DBConfiguration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
+    [Authorize]
     public class PassengersController : BaseController<PassengerViewModel>
     {
         private readonly IPassengerServices _paxServices;

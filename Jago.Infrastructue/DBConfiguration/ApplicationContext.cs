@@ -6,7 +6,7 @@ namespace Jago.Infrastructure.DBConfiguration
 {
     public interface IAppDbContext { }
 
-    public class ApplicationContext : IdentityDbContext
+    public class ApplicationContext : IdentityDbContext<User>
     {
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Trip> Trips { get; set; }

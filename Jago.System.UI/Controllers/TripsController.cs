@@ -1,10 +1,12 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
+    [Authorize]
     public class TripsController : BaseController<TripViewModel>
     {
         private readonly ITripServices _tripServices;
