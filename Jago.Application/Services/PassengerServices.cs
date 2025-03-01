@@ -11,6 +11,7 @@ namespace Jago.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IPassengerRepository _paxRepository;
+        private bool _disposed;
 
         public PassengerServices(IMapper mapper, IPassengerRepository passengerRepository)
         {
@@ -59,7 +60,26 @@ namespace Jago.Application.Services
         }
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_paxRepository is IDisposable disposableRepository)
+                    {
+                        disposableRepository.Dispose();
+                    }
+                    if (_mapper is IDisposable disposableMapper)
+                    {
+                        disposableMapper.Dispose();
+                    }
+                }
+                _disposed = true;
+            }
         }
         public IEnumerable<PassengerViewModel> GetPax()
         {

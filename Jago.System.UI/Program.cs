@@ -15,7 +15,7 @@ options.UseSqlServer(connection));
 
 builder.Services.AddAutoMapper(typeof(DomainVMMapping), typeof(VMDomainMapping));
 
-builder.Services.AddIdentity<User, IdentityRole>( options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequiredUniqueChars = 0;
     options.Password.RequireUppercase = false;

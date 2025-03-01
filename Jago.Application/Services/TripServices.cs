@@ -118,7 +118,6 @@ namespace Jago.Application.Services
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-        }
-
+        } 
     }
 }

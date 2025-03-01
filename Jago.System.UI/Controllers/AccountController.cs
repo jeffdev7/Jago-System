@@ -1,20 +1,16 @@
-﻿using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Jago.Application.Interfaces.Services;
+using Jago.CrossCutting.Dto;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Jago.System.UI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly IUserServices _userServices;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(IUserServices userServices)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _userServices = userServices;
         }
         public IActionResult Login()
         {
@@ -26,12 +22,10 @@ namespace Jago.System.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, login.RememberMe, false);
-
+                var result = await _userServices.LogIn(login);
                 if (result.Succeeded)
-                {
                     return RedirectToAction("Index", "Home");
-                }
+
                 ModelState.AddModelError("", "Invalid login attempt");
                 return View(login);
             }
@@ -47,21 +41,12 @@ namespace Jago.System.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                User newUser = new()
-                {
-                    Name = register.Name,
-                    Email = register.Email,
-                    UserName = register.Email,
-                    Address = register.Email
-                };
-                var result = await _userManager.CreateAsync(newUser, register.Password);
+                var result = await _userServices.RegisterUser(register);
 
                 if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(newUser, false);
                     return RedirectToAction("Index", "Home");
-                }
-                foreach(var error in result.Errors)
+
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
@@ -71,7 +56,7 @@ namespace Jago.System.UI.Controllers
         }
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _userServices.LogOut();
             return RedirectToAction("Index", "Home");
         }
     }

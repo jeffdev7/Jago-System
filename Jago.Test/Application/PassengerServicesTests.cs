@@ -45,7 +45,7 @@ namespace Jago.Test.Application
             var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
 
             //act
-            var result =  _paxServices.Object.GetAll();
+            var result = _paxServices.Object.GetAll();
 
             //assert
             Assert.NotNull(result);
@@ -72,7 +72,7 @@ namespace Jago.Test.Application
             _mapper.Setup(map => map.Map<PassengerViewModel>(It.IsAny<Passenger>())).Returns(expectedProduct);
 
             var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
-       
+
             //act
             var result = projectServiceMock.GetById(id);
 
@@ -116,7 +116,7 @@ namespace Jago.Test.Application
         public void SHOULD_ADD_PASSENGER()
         {
             //arrange
-            var pax  = new PassengerViewModel
+            var pax = new PassengerViewModel
             {
                 Id = Guid.NewGuid(),
                 Name = "Pax",
@@ -132,7 +132,7 @@ namespace Jago.Test.Application
                 Phone = "1425",
                 Email = "pax@hotmail.com",
             };
-            var passengerEntity = Passenger.Create("pax", "","","");
+            var passengerEntity = Passenger.Create("pax", "", "", "");
 
             _mapper.Setup(map => map.Map<Passenger>(It.IsAny<PassengerViewModel>())).Returns(passengerEntity);
             _mapper.Setup(map => map.Map<PassengerViewModel>(It.IsAny<Passenger>())).Returns(expectedPassenger);
@@ -181,7 +181,7 @@ namespace Jago.Test.Application
             var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
 
             //act
-            var result =  projectServiceMock.Update(expectedPassenger);
+            var result = projectServiceMock.Update(expectedPassenger);
 
             //assert
             Assert.True(result.IsValid);
@@ -253,7 +253,7 @@ namespace Jago.Test.Application
 
             //assert
             Assert.False(result.IsValid);
-            Assert.NotEmpty(result.Errors);  
+            Assert.NotEmpty(result.Errors);
         }
     }
 }

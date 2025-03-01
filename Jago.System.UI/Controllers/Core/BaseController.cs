@@ -1,12 +1,11 @@
-﻿using Jago.Infrastructure.DBConfiguration;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Jago.System.UI.Controllers
 {
     public abstract class BaseController<TViewModel> : Controller where TViewModel : class, new()
     {
         protected BaseController()
-        {            
+        {
         }
 
         public abstract IEnumerable<TViewModel> GetRows();

@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
-using Jago.Infrastructure.DBConfiguration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
