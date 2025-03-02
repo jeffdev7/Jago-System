@@ -23,7 +23,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install dependencies
-        run: dotnet restore src/products.sln
+        run: dotnet restore src/Jago.System.sln
 
       - name: Build
         run: dotnet build src/Jago.System.sln --configuration Release --no-restore
