@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
+using Jago.domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,15 @@ namespace Jago.System.UI.Controllers
         }
 
         // GET: Trips
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber)
         {
-            return View(GetRows());
+            var trips = _tripServices.GetAllTrips();
+
+            if (pageNumber < 1)
+                pageNumber = 1;
+            int pageSize = 6;
+
+            return View(await Pagination<TripViewModel>.CreateAsync(trips, pageNumber, pageSize));
         }
 
         public override IEnumerable<TripViewModel> GetRows()

@@ -1,8 +1,10 @@
 ﻿#nullable disable
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
+using Jago.domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jago.System.UI.Controllers
 {
@@ -18,13 +20,19 @@ namespace Jago.System.UI.Controllers
 
         public override IEnumerable<PassengerViewModel> GetRows()
         {
-            return _paxServices.GetAll();
+            return _paxServices.GetAllPax();
         }
 
         // GET: Passengers
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int pageNumber)
         {
-            return View(GetRows());
+            var pax =  _paxServices.GetAllPax();
+
+            if (pageNumber < 1)
+                pageNumber = 1;
+            int pageSize = 6;
+
+            return View(await Pagination<PassengerViewModel>.CreateAsync(pax, pageNumber, pageSize));
         }
 
         // GET: Passengers/Details

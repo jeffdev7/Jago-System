@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentValidation.Results;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Validation;
@@ -21,6 +22,17 @@ namespace Jago.Application.Services
         public IEnumerable<PassengerViewModel> GetAll()
         {
             return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetAll());
+        }
+        public IQueryable<PassengerViewModel> GetAllPax()
+        {
+            return _paxRepository.GetAll()
+                .Select(_ => new PassengerViewModel
+            {
+                Name = _.Name,
+                DocumentNumber = _.DocumentNumber,
+                Phone = _.Phone,
+                Email = _.Email
+            }); ;
         }
         public PassengerViewModel GetById(Guid id)
         {

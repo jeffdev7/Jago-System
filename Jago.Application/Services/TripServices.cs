@@ -23,7 +23,20 @@ namespace Jago.Application.Services
         {
             return _mapper.Map<IEnumerable<TripViewModel>>(_tripRepository.GetAll());
         }
-        //ORDER BY DESTINY
+        public IQueryable<TripViewModel> GetAllTrips()
+        {
+            return _tripRepository.GetAll()
+                .Select(_ => new TripViewModel
+                {
+                    Id = _.Id,
+                    Origin = _.Origin,
+                    Destine = _.Destine,
+                    Departure = _.Departure,
+                    Arrival = _.Arrival,
+                    PaxName = _.Passenger.Name,
+                    PassengerId = _.PassengerId
+                });
+        }
         public IEnumerable<TripViewModel> GetSortedTrips()
         {
             var travel = _tripRepository.GetAll().OrderBy(j => j.Destine)
@@ -76,6 +89,8 @@ namespace Jago.Application.Services
 
             if (vm.Departure <= vm.Arrival)
                 arrivalAdjustment = entity.Arrival.AddHours(3);
+            if (vm.Departure.Day > vm.Arrival.Day)
+                return ErrorCatalog.CustomErrors();
             entity.Arrival = arrivalAdjustment;
 
             var validationResult = new AddTripValidator().Validate(vm);

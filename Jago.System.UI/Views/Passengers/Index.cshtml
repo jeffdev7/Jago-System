@@ -1,5 +1,6 @@
 ﻿@using Jago.CrossCutting.Dto
-@model IEnumerable<PassengerViewModel>
+@using Jago.domain.Model
+@model Pagination<PassengerViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +8,7 @@
 }
 @if (TempData["success"]!= null)
 {
-     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript">
         toastr.success('@TempData["success"]');
@@ -25,13 +26,13 @@
         <script src="https://kit.fontawesome.com/ca515fdac4.js" crossorigin="anonymous"></script>
         <tr>
             <th>
-                 Name
+                Name
             </th>
             <th>
                 Document Number
             </th>
             <th>
-               Celular
+                Celular
             </th>
             <th>
                 Email
@@ -40,37 +41,68 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DocumentNumber)
-            </td>
+        @foreach (var item in Model.Items) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentNumber)
+                </td>
 
-            <td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.Id"><i class="far fa-edit"></i></a> |
-                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
-                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id"><i class="fas fa-user-times"></i></a>
-            </td>
-        </tr>
-}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.Id"><i class="far fa-edit"></i></a> |
+                    <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id"><i class="fas fa-user-times"></i></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@*Paging*@
+<div class="row d-flex justify-content-center align-items-center mt-5">
+    <div class="col-md-6 d-flex justify-content-center">
+        <div>
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                        <a class="page-link text-black" asp-route-pageNumber="1">
+                            <span>First</span>
+                        </a>
+                    </li>
+                    @* <li class="page-item @(Model.HasPreviousPage ? "": "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                            <span>Previous</span>
+                        </a>
+                    </li> *@
 
-@*@{
-    var prev = !Model.PreviousPage ? "disabled " : "";
-    var next = !Model.NextPage ? "disabled" : "";
-}
-<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex -1)"
-class="btn btn-outline-primary @prev"> Anterior</a>
+                    @for(int i =1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                            <a class="page-link text-black" asp-route-pageNumber="@i">@i</a>
 
-<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
-class="btn btn-outline-primary @next"> Próximo</a>*@
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                            <span>Next</span>
+                        </a>
+                    </li>
+                   @*  <li class="page-item @(Model.PageIndex == Model.TotalPages ? "" : "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.TotalPages)">
+                            <span>Last</span>
+                        </a>
+                    </li> *@
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>
