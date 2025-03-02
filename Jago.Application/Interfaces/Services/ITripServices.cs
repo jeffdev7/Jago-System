@@ -14,5 +14,6 @@ namespace Jago.Application.Services
         IEnumerable<PaxListModel> GetPaxList();
         IEnumerable<TripViewModel> GetSortedTrips();
         TripViewModel GetTripDetails(Guid id);
+        IQueryable<TripViewModel> GetAllTrips();
     }
 }

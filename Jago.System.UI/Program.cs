@@ -1,4 +1,5 @@
 using Jago.Application.AutoMapper;
+using Jago.domain.Core.Entities;
 using Jago.Infrastructure.DBConfiguration;
 using Jago.IoC;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,13 @@ options.UseSqlServer(connection));
 
 builder.Services.AddAutoMapper(typeof(DomainVMMapping), typeof(VMDomainMapping));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequiredUniqueChars = 0;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+})
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddDefaultTokenProviders();
 

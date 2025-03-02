@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentValidation.Results;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Validation;
@@ -11,6 +12,7 @@ namespace Jago.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IPassengerRepository _paxRepository;
+        private bool _disposed;
 
         public PassengerServices(IMapper mapper, IPassengerRepository passengerRepository)
         {
@@ -20,6 +22,17 @@ namespace Jago.Application.Services
         public IEnumerable<PassengerViewModel> GetAll()
         {
             return _mapper.Map<IEnumerable<PassengerViewModel>>(_paxRepository.GetAll());
+        }
+        public IQueryable<PassengerViewModel> GetAllPax()
+        {
+            return _paxRepository.GetAll()
+                .Select(_ => new PassengerViewModel
+            {
+                Name = _.Name,
+                DocumentNumber = _.DocumentNumber,
+                Phone = _.Phone,
+                Email = _.Email
+            }); ;
         }
         public PassengerViewModel GetById(Guid id)
         {
@@ -59,7 +72,26 @@ namespace Jago.Application.Services
         }
         public void Dispose()
         {
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_paxRepository is IDisposable disposableRepository)
+                    {
+                        disposableRepository.Dispose();
+                    }
+                    if (_mapper is IDisposable disposableMapper)
+                    {
+                        disposableMapper.Dispose();
+                    }
+                }
+                _disposed = true;
+            }
         }
         public IEnumerable<PassengerViewModel> GetPax()
         {

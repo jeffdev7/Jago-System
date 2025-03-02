@@ -14,6 +14,7 @@ namespace Jago.Application.Services
         ValidationResult Update(PassengerViewModel vm);
         Task<bool> Remove(Guid id);
         IEnumerable<PassengerViewModel> GetPax();
+        IQueryable<PassengerViewModel> GetAllPax();
 
     }
 }

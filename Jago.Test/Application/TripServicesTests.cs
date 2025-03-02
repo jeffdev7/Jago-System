@@ -106,7 +106,7 @@ namespace Jago.Test.Application
                 Destine = "MDV",
                 Origin = "GRU"
             };
-            
+
             _tripServices.Setup(_ => _.GetTripDetails(It.IsAny<Guid>()))
                 .Returns(detailedTrip);
             var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
@@ -322,7 +322,7 @@ namespace Jago.Test.Application
             Assert.False(result.IsValid);
             Assert.NotEmpty(result.Errors);
         }
-        
+
         [Fact]
         public void SHOULDNOT_ADD_TRIP_WHEN_DEPARTUREISTODAY()
         {
