@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 
 namespace Jago.Application.AutoMapper
 {

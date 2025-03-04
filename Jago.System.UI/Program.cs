@@ -1,5 +1,5 @@
 using Jago.Application.AutoMapper;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 using Jago.Infrastructure.DBConfiguration;
 using Jago.IoC;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +28,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationContext>();
-
+builder.Services.AddHttpContextAccessor();
 Bootstrapper.RegisterServices(builder.Services);
 builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();

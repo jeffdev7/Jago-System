@@ -1,7 +1,9 @@
 ﻿using Jago.Application.Interfaces.Services;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Jago.Application.Services
 {
@@ -9,11 +11,14 @@ namespace Jago.Application.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly HttpContextAccessor _httpContext;
 
-        public UserServices(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UserServices(UserManager<User> userManager, SignInManager<User> signInManager, 
+            HttpContextAccessor httpContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _httpContext = httpContext;
         }
 
         public async Task<IdentityResult> RegisterUser(RegisterViewModel register)
@@ -41,5 +46,11 @@ namespace Jago.Application.Services
 
         public void Dispose() =>
             GC.SuppressFinalize(this);
+
+        public string GetUserId()
+        {
+            var user = _httpContext.HttpContext.User;
+            return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
     }
 }

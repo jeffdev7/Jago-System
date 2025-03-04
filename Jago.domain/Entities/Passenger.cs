@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Jago.domain.Core.Entities
+namespace Jago.domain.Entities
 {
     public class Passenger : BaseEntity
     {
@@ -11,6 +11,7 @@ namespace Jago.domain.Core.Entities
         public string Phone { get; set; }
 
         public string Email { get; set; }
+        public string UserId { get; set; }
         protected Passenger() { }
         public static Passenger Create(string name, string documentNumber, string phone, string email)
             => new()

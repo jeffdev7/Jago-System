@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 
 
 namespace Jago.Application.Services

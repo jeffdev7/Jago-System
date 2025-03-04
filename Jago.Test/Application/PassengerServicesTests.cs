@@ -2,7 +2,7 @@
 using FluentValidation.Results;
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
 using Moq;
 

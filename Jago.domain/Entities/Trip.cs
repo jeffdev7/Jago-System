@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Jago.domain.Core.Entities
+namespace Jago.domain.Entities
 {
     public class Trip : BaseEntity
     {
@@ -10,6 +10,8 @@ namespace Jago.domain.Core.Entities
         public DateTime Arrival { get; set; }
         public virtual Passenger Passenger { get; set; }
         public Guid PassengerId { get; set; }
+        public string UserId { get; set; }
+
         protected Trip() { }
 
         public static Trip Create(string origin, string destine, DateTime departure, DateTime arrival, Guid passengerId)

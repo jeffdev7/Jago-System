@@ -8,5 +8,6 @@ namespace Jago.Application.Interfaces.Services
         Task<IdentityResult> RegisterUser(RegisterViewModel register);
         Task<SignInResult> LogIn(LoginViewModel login);
         Task LogOut();
+        string GetUserId();
     }
 }

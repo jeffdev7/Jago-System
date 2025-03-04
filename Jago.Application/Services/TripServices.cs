@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Jago.Application.Interfaces.Services;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Helper;
 using Jago.CrossCutting.Validation;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,14 @@ namespace Jago.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly ITripRepository _tripRepository;
+        private readonly IUserServices _userServices;
 
-        public TripServices(IMapper mapper, ITripRepository TripRepository)
+        public TripServices(IMapper mapper, ITripRepository TripRepository, 
+            IUserServices userServices)
         {
             _mapper = mapper;
             _tripRepository = TripRepository;
+            _userServices = userServices;
         }
         public IEnumerable<TripViewModel> GetAll()
         {
@@ -25,7 +29,9 @@ namespace Jago.Application.Services
         }
         public IQueryable<TripViewModel> GetAllTrips()
         {
+            var userId = _userServices.GetUserId();
             return _tripRepository.GetAll()
+                .Where(_ => _.UserId == userId)
                 .Select(_ => new TripViewModel
                 {
                     Id = _.Id,
@@ -85,6 +91,7 @@ namespace Jago.Application.Services
         public ValidationResult Add(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+            entity.UserId = _userServices.GetUserId();
             var arrivalAdjustment = DateTime.Now;
 
             if (vm.Departure <= vm.Arrival)
@@ -108,6 +115,7 @@ namespace Jago.Application.Services
         public ValidationResult Update(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+            entity.UserId = _userServices.GetUserId();
 
             if (vm.Arrival.TimeOfDay == vm.Departure.TimeOfDay)
                 return ErrorCatalog.CustomErrors();

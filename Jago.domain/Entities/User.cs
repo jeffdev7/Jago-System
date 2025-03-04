@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Jago.domain.Core.Entities
+namespace Jago.domain.Entities
 {
     public class User : IdentityUser
     {
