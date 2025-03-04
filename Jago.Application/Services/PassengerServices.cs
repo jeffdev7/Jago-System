@@ -53,9 +53,8 @@ namespace Jago.Application.Services
         }
         public ValidationResult Add(PassengerViewModel vm)
         {
-            var userId = _userServices.GetUserId();
             var entity = _mapper.Map<Passenger>(vm);
-            entity.UserId = userId;
+            entity.UserId = _userServices.GetUserId()!;
             var validationResult = new AddPassengerValidator(_paxRepository).Validate(vm);
             if (validationResult.IsValid)
                 _paxRepository.Add(entity);
@@ -72,7 +71,7 @@ namespace Jago.Application.Services
         {
             var entity = _mapper.Map<Passenger>(vm);
             var validationResult = new UpdatePassengerValidator(_paxRepository).Validate(vm);
-            entity.UserId = _userServices.GetUserId();
+            entity.UserId = _userServices.GetUserId()!;
             if (validationResult.IsValid)
             {
                 _paxRepository.Update(entity);

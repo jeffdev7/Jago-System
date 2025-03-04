@@ -91,13 +91,14 @@ namespace Jago.Application.Services
         public ValidationResult Add(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
-            entity.UserId = _userServices.GetUserId();
+            entity.UserId = _userServices.GetUserId()!;
             var arrivalAdjustment = DateTime.Now;
 
             if (vm.Departure <= vm.Arrival)
                 arrivalAdjustment = entity.Arrival.AddHours(3);
             if (vm.Departure.Day > vm.Arrival.Day)
                 return ErrorCatalog.CustomErrors();
+
             entity.Arrival = arrivalAdjustment;
 
             var validationResult = new AddTripValidator().Validate(vm);
@@ -115,7 +116,7 @@ namespace Jago.Application.Services
         public ValidationResult Update(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
-            entity.UserId = _userServices.GetUserId();
+            entity.UserId = _userServices.GetUserId()!;
 
             if (vm.Arrival.TimeOfDay == vm.Departure.TimeOfDay)
                 return ErrorCatalog.CustomErrors();
@@ -131,7 +132,8 @@ namespace Jago.Application.Services
         }
         public IEnumerable<PaxListModel> GetPaxList()
         {
-            return _tripRepository.GetPaxList();
+            var userId = _userServices.GetUserId();
+            return _tripRepository.GetPaxList().Where(_ => _.UserId == userId);
         }
 
         public IEnumerable<TripViewModel> GetOrder()

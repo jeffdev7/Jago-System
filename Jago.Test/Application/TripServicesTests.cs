@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Jago.Application.Interfaces.Services;
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.domain.Entities;
@@ -14,6 +15,7 @@ namespace Jago.Test.Application
         private readonly Mock<ITripServices> _tripServices = new Mock<ITripServices>();
         private readonly Mock<ITripRepository> _tripRepository = new Mock<ITripRepository>();
         private readonly Mock<IPassengerServices> _paxServices = new Mock<IPassengerServices>();
+        private readonly Mock<IUserServices> _userServices = new Mock<IUserServices>();
 
         [Fact]
         public void SHOULD_GET_ALLTRIPS()
@@ -43,7 +45,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.GetAll())
                 .Returns(listResult);
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = _tripServices.Object.GetAll();
@@ -81,7 +83,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.GetSortedTrips())
                 .Returns(listResult);
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = _tripServices.Object.GetSortedTrips();
@@ -109,7 +111,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.GetTripDetails(It.IsAny<Guid>()))
                 .Returns(detailedTrip);
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = _tripServices.Object.GetTripDetails(id);
@@ -140,7 +142,7 @@ namespace Jago.Test.Application
                 .Returns(expectedTrip);
             _mapper.Setup(map => map.Map<TripViewModel>(It.IsAny<Trip>())).Returns(expectedTrip);
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.GetById(id);
@@ -166,7 +168,7 @@ namespace Jago.Test.Application
 
             _tripRepository.Setup(_ => _.RemoveTripAsync(It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = await projectServiceMock.Remove(id);
@@ -206,7 +208,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(trip);
@@ -247,7 +249,7 @@ namespace Jago.Test.Application
             _tripServices.Setup(_ => _.Update(It.IsAny<TripViewModel>()))
                 .Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Update(expectedTrip);
@@ -265,14 +267,15 @@ namespace Jago.Test.Application
                 new PaxListModel
                 {
                    Id = Guid.NewGuid(),
-                   Name = "John"
+                   Name = "John",
+                   UserId = Guid.NewGuid().ToString()
                 }
             }.AsQueryable();
 
             _tripServices.Setup(_ => _.GetPaxList())
                 .Returns(listResult);
             _tripRepository.Setup(_ => _.GetPaxList()).Returns((IQueryable<PaxListModel>)listResult);
-            var tripServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var tripServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = tripServiceMock.GetPaxList();
@@ -313,7 +316,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(trip);
@@ -354,7 +357,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(trip);
@@ -395,7 +398,7 @@ namespace Jago.Test.Application
 
             _tripServices.Setup(_ => _.Add(It.IsAny<TripViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(trip);
@@ -440,7 +443,7 @@ namespace Jago.Test.Application
             _tripServices.Setup(_ => _.Update(It.IsAny<TripViewModel>()))
                 .Returns(new ValidationResult());
 
-            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object);
+            var projectServiceMock = new TripServices(_mapper.Object, _tripRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Update(expectedTrip);

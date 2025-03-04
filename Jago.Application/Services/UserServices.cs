@@ -44,13 +44,14 @@ namespace Jago.Application.Services
         public async Task LogOut() =>
              await _signInManager.SignOutAsync();
 
-        public void Dispose() =>
-            GC.SuppressFinalize(this);
-
-        public string GetUserId()
+        public string? GetUserId()
         {
             var user = _httpContext.HttpContext.User;
+            if (user is null)
+                throw new UnauthorizedAccessException();
             return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
+        public void Dispose() =>
+            GC.SuppressFinalize(this);
     }
 }

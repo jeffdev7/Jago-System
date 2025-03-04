@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Jago.Application.Interfaces.Services;
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.domain.Entities;
@@ -13,6 +14,7 @@ namespace Jago.Test.Application
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IPassengerServices> _paxServices = new Mock<IPassengerServices>();
         private readonly Mock<IPassengerRepository> _paxRepository = new Mock<IPassengerRepository>();
+        private readonly Mock<IUserServices> _userServices = new Mock<IUserServices>();
 
         [Fact]
         public void SHOULD_GET_ALLPASSENGERS()
@@ -42,7 +44,7 @@ namespace Jago.Test.Application
 
             _paxServices.Setup(_ => _.GetAll())
                 .Returns(listResult);
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = _paxServices.Object.GetAll();
@@ -71,7 +73,7 @@ namespace Jago.Test.Application
                 .Returns(expectedProduct);
             _mapper.Setup(map => map.Map<PassengerViewModel>(It.IsAny<Passenger>())).Returns(expectedProduct);
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.GetById(id);
@@ -103,7 +105,7 @@ namespace Jago.Test.Application
 
             _paxRepository.Setup(_ => _.RemovePassengerAsync(It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = await projectServiceMock.Remove(id);
@@ -140,7 +142,7 @@ namespace Jago.Test.Application
 
             _paxServices.Setup(_ => _.Add(It.IsAny<PassengerViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(pax);
@@ -178,7 +180,7 @@ namespace Jago.Test.Application
             _paxServices.Setup(_ => _.Update(It.IsAny<PassengerViewModel>()))
                 .Returns(new ValidationResult());
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Update(expectedPassenger);
@@ -215,7 +217,7 @@ namespace Jago.Test.Application
 
             _paxServices.Setup(_ => _.Add(It.IsAny<PassengerViewModel>())).Returns(new ValidationResult());
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Add(pax);
@@ -246,7 +248,7 @@ namespace Jago.Test.Application
             _paxServices.Setup(_ => _.Update(It.IsAny<PassengerViewModel>()))
                 .Returns(new ValidationResult());
 
-            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object);
+            var projectServiceMock = new PassengerServices(_mapper.Object, _paxRepository.Object, _userServices.Object);
 
             //act
             var result = projectServiceMock.Update(expectedPassenger);
