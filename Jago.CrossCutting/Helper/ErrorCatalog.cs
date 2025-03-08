@@ -8,7 +8,7 @@ namespace Jago.CrossCutting.Helper
         {
             var customErrorResult = new ValidationResult();
             var customErrors = new ValidationFailure();
-            customErrors.ErrorMessage = "THINK ABOUT A MESSAGE";
+            customErrors.ErrorMessage = "Departure or arrival date is invalid.";
 
             customErrorResult.Errors.Add(customErrors);
 
