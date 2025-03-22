@@ -2,10 +2,12 @@
 using AutoMapper.QueryableExtensions;
 using FluentValidation.Results;
 using Jago.Application.Interfaces.Services;
+using Jago.CrossCutting.Constants;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Validation;
 using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Jago.Application.Services
 {
@@ -30,6 +32,10 @@ namespace Jago.Application.Services
         public IQueryable<PassengerViewModel> GetAllPax()
         {
             var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+
+            if(userRole == Constants.Role) 
+               return GetAllPaxAsAdmin();
 
             return _paxRepository.GetAll().Where(_ => _.UserId == userId)
                 .Select(_ => new PassengerViewModel
@@ -41,6 +47,20 @@ namespace Jago.Application.Services
                 Email = _.Email,
             });
         }
+
+        private IQueryable<PassengerViewModel> GetAllPaxAsAdmin()
+        {
+            return _paxRepository.GetAll()
+            .Select(_ => new PassengerViewModel
+            {
+                Id = _.Id,
+                Name = _.Name,
+                DocumentNumber = _.DocumentNumber,
+                Phone = _.Phone,
+                Email = _.Email,
+            });
+        }
+
         public PassengerViewModel GetById(Guid id)
         {
             var userId = _userServices.GetUserId();

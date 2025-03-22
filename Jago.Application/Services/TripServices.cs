@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
 using Jago.Application.Interfaces.Services;
+using Jago.CrossCutting.Constants;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Helper;
 using Jago.CrossCutting.Validation;
@@ -30,6 +31,11 @@ namespace Jago.Application.Services
         public IQueryable<TripViewModel> GetAllTrips()
         {
             var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+
+            if(userRole == Constants.Role)
+                return GetAllTripsAsAdmin();
+            
             return _tripRepository.GetAll()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => new TripViewModel
@@ -43,6 +49,22 @@ namespace Jago.Application.Services
                     PassengerId = _.PassengerId
                 });
         }
+
+        private IQueryable<TripViewModel> GetAllTripsAsAdmin()
+        {
+            return _tripRepository.GetAll()
+          .Select(_ => new TripViewModel
+          {
+              Id = _.Id,
+              Origin = _.Origin,
+              Destine = _.Destine,
+              Departure = _.Departure,
+              Arrival = _.Arrival,
+              PaxName = _.Passenger.Name,
+              PassengerId = _.PassengerId
+          });
+        }
+
         public IEnumerable<TripViewModel> GetSortedTrips()
         {
             var travel = _tripRepository.GetAll().OrderBy(j => j.Destine)
