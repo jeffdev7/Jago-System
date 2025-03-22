@@ -3,6 +3,7 @@ using Jago.CrossCutting.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Jago.System.UI.Controllers
 {
@@ -53,10 +54,13 @@ namespace Jago.System.UI.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
+            if (!User.Identity!.IsAuthenticated)
+                return Unauthorized("Access Denied.");         
+                
             if (ModelState.IsValid)
             {
                 var result = await _userServices.RegisterUser(register);

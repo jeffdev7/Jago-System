@@ -155,6 +155,9 @@ namespace Jago.Application.Services
         public IEnumerable<PaxListModel> GetPaxList()
         {
             var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+            if (userRole == Constants.Role)
+                return _tripRepository.GetPaxList();
             return _tripRepository.GetPaxList().Where(_ => _.UserId == userId);
         }
 
