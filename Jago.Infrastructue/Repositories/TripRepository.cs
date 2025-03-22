@@ -22,11 +22,11 @@ namespace Jago.Infrastructure.Repositories
         }
         public IQueryable<PaxListModel> GetPaxList()
         {
-            return _context.Passengers.Select(j => new PaxListModel 
-            { 
-                Id = j.Id, 
-                Name = j.Name, 
-                UserId = j.UserId 
+            return _context.Passengers.Select(j => new PaxListModel
+            {
+                Id = j.Id,
+                Name = j.Name,
+                UserId = j.UserId
             }).AsQueryable();
         }
         public async Task<bool> RemoveTripAsync(Guid Id)

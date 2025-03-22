@@ -4,7 +4,6 @@ using Jago.CrossCutting.Dto;
 using Jago.domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Jago.System.UI.Controllers
 {
@@ -26,7 +25,7 @@ namespace Jago.System.UI.Controllers
         // GET: Passengers
         public async Task<IActionResult> Index(int pageNumber)
         {
-            var pax =  _paxServices.GetAllPax();
+            var pax = _paxServices.GetAllPax();
 
             if (pageNumber < 1)
                 pageNumber = 1;

@@ -17,7 +17,7 @@ namespace Jago.Application.Services
         private readonly ITripRepository _tripRepository;
         private readonly IUserServices _userServices;
 
-        public TripServices(IMapper mapper, ITripRepository TripRepository, 
+        public TripServices(IMapper mapper, ITripRepository TripRepository,
             IUserServices userServices)
         {
             _mapper = mapper;
@@ -33,9 +33,9 @@ namespace Jago.Application.Services
             var userId = _userServices.GetUserId();
             var userRole = _userServices.GetUserRole();
 
-            if(userRole == Constants.Role)
+            if (userRole == Constants.Role)
                 return GetAllTripsAsAdmin();
-            
+
             return _tripRepository.GetAll()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => new TripViewModel
@@ -158,6 +158,7 @@ namespace Jago.Application.Services
             var userRole = _userServices.GetUserRole();
             if (userRole == Constants.Role)
                 return _tripRepository.GetPaxList();
+
             return _tripRepository.GetPaxList().Where(_ => _.UserId == userId);
         }
 
@@ -168,6 +169,6 @@ namespace Jago.Application.Services
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-        } 
+        }
     }
 }

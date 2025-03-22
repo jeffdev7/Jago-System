@@ -13,7 +13,7 @@ namespace Jago.System.UI.Controllers
         {
             _roleManager = roleManager;
         }
-        
+
         public IActionResult Index()
         {
             var roles = _roleManager.Roles;
@@ -27,6 +27,7 @@ namespace Jago.System.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(IdentityRole role)
         {
             if (!_roleManager.RoleExistsAsync(role.Name).GetAwaiter().GetResult())

@@ -16,7 +16,7 @@ namespace Jago.Application.Services
         private readonly HttpContextAccessor _httpContext;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserServices(UserManager<User> userManager, SignInManager<User> signInManager, 
+        public UserServices(UserManager<User> userManager, SignInManager<User> signInManager,
             HttpContextAccessor httpContext, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
@@ -64,7 +64,7 @@ namespace Jago.Application.Services
             return user.FindFirst(ClaimTypes.Role)?.Value;
         }
 
-        public async Task<List<string?>> GetAllRoles() =>   
+        public async Task<List<string?>> GetAllRoles() =>
             await _roleManager.Roles.Select(_ => _.Name).ToListAsync();
 
         public async Task<bool> GetCurrentUser(ClaimsPrincipal claimsIdentity)
