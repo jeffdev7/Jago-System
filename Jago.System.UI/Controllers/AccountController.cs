@@ -58,8 +58,8 @@ namespace Jago.System.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
-            if (!User.Identity!.IsAuthenticated)
-                return Unauthorized("Access Denied.");
+            //if (!User.Identity!.IsAuthenticated)
+            //    return Unauthorized("Access Denied.");
 
             if (ModelState.IsValid)
             {
