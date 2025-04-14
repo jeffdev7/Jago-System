@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Jago.Application.Interfaces.Services;
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.domain.Model;
@@ -12,17 +13,22 @@ namespace Jago.System.UI.Controllers
     {
         private readonly ITripServices _tripServices;
         private readonly IPassengerServices _passengerServices;
+        private readonly IUserServices _userServices;
 
-        public TripsController(ITripServices tripServices, IPassengerServices passengerServices)
+        public TripsController(ITripServices tripServices, IPassengerServices passengerServices, IUserServices userServices)
         {
             _tripServices = tripServices;
             _passengerServices = passengerServices;
+            _userServices = userServices;
         }
 
         // GET: Trips
         public async Task<IActionResult> Index(int pageNumber)
         {
             var trips = _tripServices.GetAllTrips();
+            bool isAdmin = await _userServices.GetCurrentUser(User);
+
+            ViewBag.IsAdmin = isAdmin;
 
             if (pageNumber < 1)
                 pageNumber = 1;
@@ -77,7 +83,7 @@ namespace Jago.System.UI.Controllers
 
         }
 
-        // GET: Trips/Edit
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
@@ -92,6 +98,7 @@ namespace Jago.System.UI.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TripViewModel vm)
@@ -113,7 +120,7 @@ namespace Jago.System.UI.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Trips/Delete
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Delete(Guid id)
         {
@@ -125,7 +132,7 @@ namespace Jago.System.UI.Controllers
             return View(trip);
         }
 
-        // POST: Trips/Delete
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

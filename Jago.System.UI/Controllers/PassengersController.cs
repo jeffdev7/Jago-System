@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Jago.Application.Interfaces.Services;
 using Jago.Application.Services;
 using Jago.CrossCutting.Dto;
 using Jago.domain.Model;
@@ -11,10 +12,12 @@ namespace Jago.System.UI.Controllers
     public class PassengersController : BaseController<PassengerViewModel>
     {
         private readonly IPassengerServices _paxServices;
+        private readonly IUserServices _userServices;
 
-        public PassengersController(IPassengerServices paxServices)
+        public PassengersController(IPassengerServices paxServices, IUserServices userServices)
         {
             _paxServices = paxServices;
+            _userServices = userServices;
         }
 
         public override IEnumerable<PassengerViewModel> GetRows()
@@ -26,6 +29,9 @@ namespace Jago.System.UI.Controllers
         public async Task<IActionResult> Index(int pageNumber)
         {
             var pax = _paxServices.GetAllPax();
+            bool isAdmin = await _userServices.GetCurrentUser(User);
+
+            ViewBag.IsAdmin = isAdmin;
 
             if (pageNumber < 1)
                 pageNumber = 1;
@@ -79,6 +85,7 @@ namespace Jago.System.UI.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
@@ -91,6 +98,7 @@ namespace Jago.System.UI.Controllers
             return View(item);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(PassengerViewModel vm)
@@ -114,7 +122,7 @@ namespace Jago.System.UI.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Passengers/Delete
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Guid id)
         {
             var passenger = _paxServices.GetById(id);
@@ -126,7 +134,7 @@ namespace Jago.System.UI.Controllers
             return View(passenger);
         }
 
-        // POST: Passengers/Delete
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
