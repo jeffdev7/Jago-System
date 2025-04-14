@@ -12,26 +12,28 @@ namespace Jago.CrossCutting.Validation
         {
             _passengerRepository = passengerRepository;
 
-            RuleFor(j => j.Name).NotNull();
-            RuleFor(j => j.Name).NotEmpty()
+            RuleFor(j => j.Name)
+                .NotNull()
+                .NotEmpty()
                 .Matches("^[A-Za-z ]+$");
 
-            RuleFor(j => j.Phone).NotNull();
-            RuleFor(j => j.Phone).NotEmpty();
+            RuleFor(j => j.Phone)
+                .NotNull()
+                .NotEmpty();
 
-            RuleFor(j => j.Email).NotNull();
-            RuleFor(j => j.Email).NotEmpty()
+            RuleFor(j => j.Email)
+                .NotNull()
+                .NotEmpty()
                 .EmailAddress();
 
-            RuleFor(j => j.DocumentNumber).NotNull();
             RuleFor(j => j.DocumentNumber)
+                .NotNull()
                 .Must(ValidDocument)
                 .WithMessage("Invalid Document");
 
             RuleFor(j => j.DocumentNumber)
                .Must(IsDocumentUnique)
                .WithMessage("This document already exists in our base");
-
 
         }
         private static bool ValidDocument(string document) => document.IsValidDocument();

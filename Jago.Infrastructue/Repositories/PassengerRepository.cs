@@ -1,4 +1,4 @@
-﻿using Jago.domain.Core.Entities;
+﻿using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
 using Jago.Infrastructure.DBConfiguration;
 using Microsoft.EntityFrameworkCore;

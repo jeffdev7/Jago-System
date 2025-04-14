@@ -1,6 +1,7 @@
 ﻿using Jago.Application.Interfaces.Services;
 using Jago.CrossCutting.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Jago.System.UI.Controllers
 {
@@ -12,12 +13,14 @@ namespace Jago.System.UI.Controllers
         {
             _userServices = userServices;
         }
+
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
             if (ModelState.IsValid)
@@ -31,14 +34,33 @@ namespace Jago.System.UI.Controllers
             }
             return View(login);
         }
-        public IActionResult Register()
+
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Register()
         {
-            return View();
+            var roles = await _userServices.GetAllRoles();
+
+            var model = new RegisterViewModel
+            {
+                RolesList = roles
+            };
+            ViewBag.Roles = roles.Select(_ => new SelectListItem
+            {
+                Value = _,
+                Text = _
+            }).ToList();
+
+            return View(model);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
+            //if (!User.Identity!.IsAuthenticated)
+            //    return Unauthorized("Access Denied.");
+
             if (ModelState.IsValid)
             {
                 var result = await _userServices.RegisterUser(register);

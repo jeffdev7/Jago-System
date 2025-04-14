@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation.Results;
+using Jago.Application.Interfaces.Services;
+using Jago.CrossCutting.Constants;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Validation;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
 
 namespace Jago.Application.Services
@@ -12,12 +13,15 @@ namespace Jago.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IPassengerRepository _paxRepository;
+        private readonly IUserServices _userServices;
         private bool _disposed;
 
-        public PassengerServices(IMapper mapper, IPassengerRepository passengerRepository)
+        public PassengerServices(IMapper mapper, IPassengerRepository passengerRepository,
+            IUserServices userServices)
         {
             _mapper = mapper;
             _paxRepository = passengerRepository;
+            _userServices = userServices;
         }
         public IEnumerable<PassengerViewModel> GetAll()
         {
@@ -25,17 +29,40 @@ namespace Jago.Application.Services
         }
         public IQueryable<PassengerViewModel> GetAllPax()
         {
-            return _paxRepository.GetAll()
+            var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+
+            if (userRole == Constants.Role)
+                return GetAllPaxAsAdmin();
+
+            return _paxRepository.GetAll().Where(_ => _.UserId == userId)
                 .Select(_ => new PassengerViewModel
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    DocumentNumber = _.DocumentNumber,
+                    Phone = _.Phone,
+                    Email = _.Email,
+                });
+        }
+
+        private IQueryable<PassengerViewModel> GetAllPaxAsAdmin()
+        {
+            return _paxRepository.GetAll()
+            .Select(_ => new PassengerViewModel
             {
+                Id = _.Id,
                 Name = _.Name,
                 DocumentNumber = _.DocumentNumber,
                 Phone = _.Phone,
-                Email = _.Email
-            }); ;
+                Email = _.Email,
+            });
         }
+
         public PassengerViewModel GetById(Guid id)
         {
+            var userId = _userServices.GetUserId();
+
             return _mapper.Map<PassengerViewModel>(_paxRepository.GetById(id));
         }
         public IEnumerable<PassengerViewModel> GetAllBy(Func<Passenger, bool> exp)
@@ -45,12 +72,12 @@ namespace Jago.Application.Services
         public ValidationResult Add(PassengerViewModel vm)
         {
             var entity = _mapper.Map<Passenger>(vm);
+            entity.UserId = _userServices.GetUserId()!;
             var validationResult = new AddPassengerValidator(_paxRepository).Validate(vm);
             if (validationResult.IsValid)
                 _paxRepository.Add(entity);
 
             return validationResult;
-
         }
 
         public async Task<bool> Remove(Guid id)
@@ -62,7 +89,7 @@ namespace Jago.Application.Services
         {
             var entity = _mapper.Map<Passenger>(vm);
             var validationResult = new UpdatePassengerValidator(_paxRepository).Validate(vm);
-
+            entity.UserId = _userServices.GetUserId()!;
             if (validationResult.IsValid)
             {
                 _paxRepository.Update(entity);

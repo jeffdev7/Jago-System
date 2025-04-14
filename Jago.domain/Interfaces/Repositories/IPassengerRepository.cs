@@ -1,4 +1,4 @@
-﻿using Jago.domain.Core.Entities;
+﻿using Jago.domain.Entities;
 
 namespace Jago.domain.Interfaces.Repositories
 {

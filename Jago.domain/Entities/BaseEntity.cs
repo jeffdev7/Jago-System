@@ -1,4 +1,4 @@
-﻿namespace Jago.domain.Core.Entities
+﻿namespace Jago.domain.Entities
 {
     public abstract class BaseEntity
     {

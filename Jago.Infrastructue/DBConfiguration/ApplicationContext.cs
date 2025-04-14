@@ -1,4 +1,4 @@
-﻿using Jago.domain.Core.Entities;
+﻿using Jago.domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

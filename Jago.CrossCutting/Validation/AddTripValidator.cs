@@ -7,17 +7,30 @@ namespace Jago.CrossCutting.Validation
     {
         public AddTripValidator()
         {
-            RuleFor(j => j.PassengerId).NotEmpty().WithMessage("Select a passenger");
-            RuleFor(j => j.Origin).NotNull();
-            RuleFor(j => j.Origin).NotEmpty().Matches("^[A-Za-z ]+$");
-            RuleFor(j => j.Destine).NotNull();
-            RuleFor(j => j.Destine).NotEmpty().Matches("^[A-Za-z ]+$");
-            RuleFor(j => j.Departure).NotNull();
-            RuleFor(j => j.Departure).NotEmpty()
-                .Must(IsValidDate).WithMessage("Departure date must be different from today's.");
-            RuleFor(j => j.Arrival).NotEmpty()
+            RuleFor(j => j.PassengerId)
+                .NotEmpty()
+                .WithMessage("Select a passenger.");
+
+            RuleFor(j => j.Origin)
+                .NotNull()
+                .NotEmpty()
+                .Matches("^[A-Za-z ]+$");
+
+            RuleFor(j => j.Destine)
+                .NotNull()
+                .NotEmpty()
+                .Matches("^[A-Za-z ]+$");
+
+            RuleFor(j => j.Departure)
+                .NotNull()
+                .NotEmpty()
                 .Must(IsValidDate)
-                .WithMessage("Arrival date must be ...thinking of something...");
+                .WithMessage("Departure date must be different from today's.");
+
+            RuleFor(j => j.Arrival)
+                .NotEmpty()
+                .Must(IsValidDate)
+                .WithMessage("Arrival date is invalid.");
         }
 
         private static bool IsValidDate(DateTime date)

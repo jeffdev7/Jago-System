@@ -3,6 +3,7 @@ using Jago.Application.Services;
 using Jago.domain.Interfaces.Repositories;
 using Jago.Infrastructure.DBConfiguration;
 using Jago.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +11,6 @@ namespace Jago.IoC
 {
     public class Bootstrapper
     {
-        //  public IConfiguration Config { get; }
         public static void RegisterServices(IServiceCollection services)
         {
 
@@ -30,6 +30,7 @@ namespace Jago.IoC
             services.AddScoped<IUserServices, UserServices>();
 
             services.AddDbContext<ApplicationContext>();
+            services.AddScoped<HttpContextAccessor>();
             //services.AddTransient<IAppDbContext, ApplicationContext>();
         }
     }

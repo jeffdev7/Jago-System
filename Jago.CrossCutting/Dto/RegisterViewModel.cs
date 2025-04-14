@@ -18,6 +18,8 @@ namespace Jago.CrossCutting.Dto
         [Compare("Password", ErrorMessage = "Passwords don't match.")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+        public string Role { get; set; }
+        public IEnumerable<string>? RolesList { get; set; }
 
     }
 }

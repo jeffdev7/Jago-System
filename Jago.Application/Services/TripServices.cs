@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Jago.Application.Interfaces.Services;
+using Jago.CrossCutting.Constants;
 using Jago.CrossCutting.Dto;
 using Jago.CrossCutting.Helper;
 using Jago.CrossCutting.Validation;
-using Jago.domain.Core.Entities;
+using Jago.domain.Entities;
 using Jago.domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +15,14 @@ namespace Jago.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly ITripRepository _tripRepository;
+        private readonly IUserServices _userServices;
 
-        public TripServices(IMapper mapper, ITripRepository TripRepository)
+        public TripServices(IMapper mapper, ITripRepository TripRepository,
+            IUserServices userServices)
         {
             _mapper = mapper;
             _tripRepository = TripRepository;
+            _userServices = userServices;
         }
         public IEnumerable<TripViewModel> GetAll()
         {
@@ -25,7 +30,14 @@ namespace Jago.Application.Services
         }
         public IQueryable<TripViewModel> GetAllTrips()
         {
+            var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+
+            if (userRole == Constants.Role)
+                return GetAllTripsAsAdmin();
+
             return _tripRepository.GetAll()
+                .Where(_ => _.UserId == userId)
                 .Select(_ => new TripViewModel
                 {
                     Id = _.Id,
@@ -37,6 +49,22 @@ namespace Jago.Application.Services
                     PassengerId = _.PassengerId
                 });
         }
+
+        private IQueryable<TripViewModel> GetAllTripsAsAdmin()
+        {
+            return _tripRepository.GetAll()
+          .Select(_ => new TripViewModel
+          {
+              Id = _.Id,
+              Origin = _.Origin,
+              Destine = _.Destine,
+              Departure = _.Departure,
+              Arrival = _.Arrival,
+              PaxName = _.Passenger.Name,
+              PassengerId = _.PassengerId
+          });
+        }
+
         public IEnumerable<TripViewModel> GetSortedTrips()
         {
             var travel = _tripRepository.GetAll().OrderBy(j => j.Destine)
@@ -85,12 +113,14 @@ namespace Jago.Application.Services
         public ValidationResult Add(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+            entity.UserId = _userServices.GetUserId()!;
             var arrivalAdjustment = DateTime.Now;
 
             if (vm.Departure <= vm.Arrival)
                 arrivalAdjustment = entity.Arrival.AddHours(3);
             if (vm.Departure.Day > vm.Arrival.Day)
                 return ErrorCatalog.CustomErrors();
+
             entity.Arrival = arrivalAdjustment;
 
             var validationResult = new AddTripValidator().Validate(vm);
@@ -108,6 +138,7 @@ namespace Jago.Application.Services
         public ValidationResult Update(TripViewModel vm)
         {
             var entity = _mapper.Map<Trip>(vm);
+            entity.UserId = _userServices.GetUserId()!;
 
             if (vm.Arrival.TimeOfDay == vm.Departure.TimeOfDay)
                 return ErrorCatalog.CustomErrors();
@@ -123,7 +154,12 @@ namespace Jago.Application.Services
         }
         public IEnumerable<PaxListModel> GetPaxList()
         {
-            return _tripRepository.GetPaxList();
+            var userId = _userServices.GetUserId();
+            var userRole = _userServices.GetUserRole();
+            if (userRole == Constants.Role)
+                return _tripRepository.GetPaxList();
+
+            return _tripRepository.GetPaxList().Where(_ => _.UserId == userId);
         }
 
         public IEnumerable<TripViewModel> GetOrder()
@@ -133,6 +169,6 @@ namespace Jago.Application.Services
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-        } 
+        }
     }
 }
