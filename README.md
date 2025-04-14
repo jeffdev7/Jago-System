@@ -10,8 +10,9 @@ It's a role-based application that manages passengers and trips, each passenger 
     <li>There should be only User and Admin for this application;</li>
 
 </ul>
-
-<h2> Features</h2>
+<h2>Main validations</h2>
+<p>TO DO (?)</p>
+<h2>Features</h2>
 <h3>Login</h3>
 
 ![login-page](https://github.com/user-attachments/assets/e7df72ef-433c-4650-b450-d980c6354a1a)
