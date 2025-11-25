@@ -297,3 +297,4 @@ obj/
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,dotnetcore,nette
 /Jago.System.UI/appsettings.json
 /Jago.Infrastructue/appsettings.json
+/Jago.Infrastructue/appsettings.json

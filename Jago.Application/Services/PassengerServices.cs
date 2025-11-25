@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DPQ.lib.Services;
 using FluentValidation.Results;
 using Jago.Application.Interfaces.Services;
 using Jago.CrossCutting.Constants;
@@ -15,6 +16,7 @@ namespace Jago.Application.Services
         private readonly IPassengerRepository _paxRepository;
         private readonly IUserServices _userServices;
         private bool _disposed;
+        private MaskingService _maskingService = new MaskingService();
 
         public PassengerServices(IMapper mapper, IPassengerRepository passengerRepository,
             IUserServices userServices)
@@ -74,8 +76,13 @@ namespace Jago.Application.Services
             var entity = _mapper.Map<Passenger>(vm);
             entity.UserId = _userServices.GetUserId()!;
             var validationResult = new AddPassengerValidator(_paxRepository).Validate(vm);
+
             if (validationResult.IsValid)
+            {
+                var maskedDocument = _maskingService.Mask(entity.DocumentNumber, "CPF", DPQ.lib.Enums.MaskingLevel.Partial);
+                entity.DocumentNumber = maskedDocument;
                 _paxRepository.Add(entity);
+            }
 
             return validationResult;
         }
