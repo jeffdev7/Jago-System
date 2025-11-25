@@ -1,0 +1,116 @@
+﻿@using Jago.CrossCutting.Dto
+@using Jago.domain.Entities
+@using Jago.domain.Model
+@using Microsoft.AspNetCore.Identity
+@model Pagination<PassengerViewModel>
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["success"]!= null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["success"]');
+    </script>
+}
+
+<br />
+<h3>Passengers</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>Add</a>
+</p>
+<table class="table">
+    <thead>
+        <script src="https://kit.fontawesome.com/ca515fdac4.js" crossorigin="anonymous"></script>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Document Number
+            </th>
+            <th>
+                Celular
+            </th>
+            <th>
+                Email
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentNumber)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @if (signInManager.IsSignedIn(User) && ViewBag.IsAdmin == true)
+                    {
+                        <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.Id"><i class="far fa-edit"></i></a>
+                        <a asp-action = "Details" class="btn btn-info" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> 
+                        <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id"><i class="fas fa-user-times"></i></a>
+                    }
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*Paging*@
+<div class="row d-flex justify-content-center align-items-center mt-5">
+    <div class="col-md-6 d-flex justify-content-center">
+        <div>
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                        <a class="page-link text-black" asp-route-pageNumber="1">
+                            <span>First</span>
+                        </a>
+                    </li>
+                    @* <li class="page-item @(Model.HasPreviousPage ? "": "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                            <span>Previous</span>
+                        </a>
+                    </li> *@
+
+                    @for(int i =1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                            <a class="page-link text-black" asp-route-pageNumber="@i">@i</a>
+
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                            <span>Next</span>
+                        </a>
+                    </li>
+                   @*  <li class="page-item @(Model.PageIndex == Model.TotalPages ? "" : "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.TotalPages)">
+                            <span>Last</span>
+                        </a>
+                    </li> *@
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>

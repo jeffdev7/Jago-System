@@ -1,0 +1,158 @@
+﻿#nullable disable
+using Jago.Application.Interfaces.Services;
+using Jago.Application.Services;
+using Jago.CrossCutting.Dto;
+using Jago.domain.Model;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Jago.System.UI.Controllers
+{
+    [Authorize]
+    public class PassengersController : BaseController<PassengerViewModel>
+    {
+        private readonly IPassengerServices _paxServices;
+        private readonly IUserServices _userServices;
+
+        public PassengersController(IPassengerServices paxServices, IUserServices userServices)
+        {
+            _paxServices = paxServices;
+            _userServices = userServices;
+        }
+
+        public override IEnumerable<PassengerViewModel> GetRows()
+        {
+            return _paxServices.GetAllPax();
+        }
+
+        // GET: Passengers
+        public async Task<IActionResult> Index(int pageNumber)
+        {
+            var pax = _paxServices.GetAllPax();
+            bool isAdmin = await _userServices.GetCurrentUser(User);
+
+            ViewBag.IsAdmin = isAdmin;
+
+            if (pageNumber < 1)
+                pageNumber = 1;
+            int pageSize = 6;
+
+            return View(await Pagination<PassengerViewModel>.CreateAsync(pax, pageNumber, pageSize));
+        }
+
+        // GET: Passengers/Details
+        public IActionResult Details(Guid id)
+        {
+            var passenger = _paxServices.GetById(id);
+
+            if (passenger == null)
+                return NotFound();
+
+            return View(passenger);
+        }
+
+        // GET: Passengers/Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(PassengerViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var result = _paxServices.Add(vm);
+
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(vm);
+            }
+
+            else
+            {
+                TempData["success"] = "Passenger added successfully";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            var item = _paxServices.GetById(id);
+            if (item == null)
+                return BadRequest();
+
+            LoadViewBags();
+
+            return View(item);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(PassengerViewModel vm)
+        {
+            var result = _paxServices.Update(vm);
+
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return View(vm);
+            }
+            else
+            {
+                TempData["success"] = "Passenger updated successfully";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(Guid id)
+        {
+            var passenger = _paxServices.GetById(id);
+            if (passenger == null)
+            {
+                return NotFound();
+            }
+
+            return View(passenger);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var result = await _paxServices.Remove(id);
+            TempData["success"] = "Passenger deleted successfully";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public override void LoadViewBags()
+        {
+            LoadAsync();
+        }
+        public async void LoadAsync() { }
+
+        public override PassengerViewModel GetRow(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
