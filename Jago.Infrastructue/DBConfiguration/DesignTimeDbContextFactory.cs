@@ -14,7 +14,7 @@ namespace Jago.Infrastructure.DBConfiguration
                .Build();
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             var connection = config.GetConnectionString("DefaultConnection");
-            builder.UseSqlServer(connection);
+            builder.UseNpgsql(connection);
 
             return new ApplicationContext(builder.Options);
         }
